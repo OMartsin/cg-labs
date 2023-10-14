@@ -1,0 +1,29 @@
+:root {
+  --bg-color: linear-gradient(113.57deg, #D4D5C9 23.42%, #E4E6D9 39.89%, #E4E6D9 39.9%, #C6E3EC 107.94%);
+  --header-height: 4rem;
+  --sidebar-width: 7.5rem;
+}
+
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+}
+
+body{
+  font-family: 'Livvic', sans-serif;
+  font-size: 1.25rem;
+  color:rgba(12, 8, 4, 0.74);
+  background: linear-gradient(113.57deg, #D4D5C9 23.42%, #E4E6D9 39.89%, #E4E6D9 39.9%, #C6E3EC 107.94%);
+}
+
+input, button, textarea, select {
+  font: inherit;
+    font-size: inherit;
+}
+
+.fa-solid {
+  padding-right: 0.75rem;
+}
