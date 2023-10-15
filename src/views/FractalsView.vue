@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import FractalCanvas from '@/components/FractalCanvas.vue';
 import FractalsInteraction from '../components/FractalsInteraction.vue'
-import { useZoomStore } from '@/stores/zoom';
-import { useIteratiosStore } from '@/stores/iterations';
+import { useFractalsInfoStore } from '@/stores/fractalsinfo';
 
-const zoomLevelStore = useZoomStore();
-zoomLevelStore.setZoomLevel(1);
+const fractalsInfoStore = useFractalsInfoStore();
+fractalsInfoStore.setZoom(1);
+fractalsInfoStore.setIterations(50);
+fractalsInfoStore.setHue(0);
 
-const iterationsStore = useIteratiosStore();
-iterationsStore.setIterations(50);
+
 
 </script>
 
@@ -21,10 +21,14 @@ iterationsStore.setIterations(50);
       </div>
       <div class="main-form-fractals-content">
         <FractalsInteraction
-        :updateZoomLevel = zoomLevelStore.setZoomLevel
-        :zoomLevel = zoomLevelStore.zoom 
-        :updateIterations = iterationsStore.setIterations
-        :iterations = iterationsStore.iterations />
+        :updateZoomLevel = fractalsInfoStore.setZoom
+        :zoomLevel = fractalsInfoStore.zoom 
+        :updateIterations = fractalsInfoStore.setIterations
+        :iterations = fractalsInfoStore.iterations
+        :updateHue = fractalsInfoStore.setHue
+        :hue = fractalsInfoStore.hue
+        :setSaveImage="fractalsInfoStore.setSaveImage"
+         />
         <FractalCanvas />
       </div>
     </div>

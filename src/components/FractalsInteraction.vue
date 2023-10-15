@@ -1,27 +1,58 @@
 <script setup lang="ts">
+import { ref, defineEmits } from 'vue'
 
-import { ref, watch } from 'vue';
+const { updateZoomLevel, updateIterations, iterations, zoomLevel, updateHue, hue, setSaveImage } =
+  defineProps<{
+    updateZoomLevel: (newZoomLevel: number) => void
+    zoomLevel: number
+    updateIterations: (newIterations: number) => void
+    iterations: number
+    updateHue: (newHue: number) => void
+    hue: number
+    setSaveImage: (newVal: boolean) => void
+  }>()
 
-const { updateZoomLevel, updateIterations, iterations, zoomLevel } = defineProps<{
-  updateZoomLevel: (newZoomLevel: number) => void;
-  zoomLevel: number;
-  updateIterations: (newIterations: number) => void;
-  iterations: number;
-}>();
+const tempZoomLevel = ref<number>(zoomLevel)
+const tempIterations = ref<number>(iterations)
+const tempHue = ref<number>(hue)
 
-const tempZoomLevel = ref<number>(zoomLevel);
-const tempIterations = ref<number>(iterations);
+function setNewHUE() {
+  updateHue(tempHue.value)
+}
 
-watch(tempZoomLevel, (newZoomLevel) => {
-  updateZoomLevel(newZoomLevel);
-});
+function setNewZoom() {
+  updateZoomLevel(tempZoomLevel.value)
+}
 
-watch(tempIterations, (newIterations) => {
-  updateIterations(newIterations);
-});
+function setNewIterations() {
+  updateIterations(tempIterations.value)
+}
 
+function handleKeyDownZoom(event: Event): void {
+  const isKeyboardEvent = event instanceof KeyboardEvent
+  console.log('Check if keyboard event')
+  if (isKeyboardEvent) {
+    console.log('isKeyboardEvent')
+    setNewZoom()
+  }
+}
+function handleKeyDownIterations(event: Event): void {
+  const isKeyboardEvent = event instanceof KeyboardEvent
+  console.log('Check if keyboard event')
+  if (isKeyboardEvent) {
+    console.log('isKeyboardEvent')
+    setNewIterations()
+  }
+}
 
-
+function handleKeyDownHue(event: Event): void {
+  const isKeyboardEvent = event instanceof KeyboardEvent
+  console.log('Check if keyboard event')
+  if (isKeyboardEvent) {
+    console.log('isKeyboardEvent')
+    setNewHUE()
+  }
+}
 </script>
 
 <template>
@@ -32,24 +63,61 @@ watch(tempIterations, (newIterations) => {
         <option value="Ch z">Ch z</option>
         <option value="sin z * cos z">sin z * cos z</option>
       </select>
-
-      <div class="slider-container">
-        <div class="slider-container-data">
-          <a>Iterations</a>
-          <a>{{ tempIterations }}</a>
+      <div class="sliders-blue-group">
+        <div class="slider-container">
+          <div class="slider-container-data">
+            <a>Iterations</a>
+            <a>{{ tempIterations }}</a>
+          </div>
+          <input
+            v-model="tempIterations"
+            v-on:mouseup="setNewIterations"
+            @keyup="handleKeyDownIterations"
+            type="range"
+            min="0"
+            max="100"
+            class="slider"
+            id="mySlider"
+          />
         </div>
-        <input v-model="tempIterations" type="range" min="0" max="100" class="slider" id="mySlider" />
+
+        <div class="slider-container">
+          <div class="slider-container-data">
+            <a>Hue</a>
+            <a>{{ tempHue }}</a>
+          </div>
+          <input
+            v-model="tempHue"
+            v-on:mouseup="setNewHUE"
+            @keyup="handleKeyDownHue"
+            type="range"
+            min="1"
+            max="360"
+            class="colored slider"
+            id="mySlider"
+          />
+        </div>
       </div>
     </div>
 
     <div class="slider-container">
       <div class="slider-container-data">
         <a>Zoom</a>
-        <a>{{ zoomLevel }}</a>
+        <a>{{ tempZoomLevel }}</a>
       </div>
-      <input v-model="tempZoomLevel" type="range" min="1" max="5" class="slider" id="mySlider" />
+      <input
+        v-model="tempZoomLevel"
+        v-on:mouseup="setNewZoom"
+        @keyup="handleKeyDownZoom"
+        type="range"
+        min="1"
+        max="5"
+        class="slider"
+        id="mySlider"
+      />
     </div>
-    <button class="save-button" id="save-button">
+
+    <button class="save-button" id="save-button" @click="setSaveImage(true)">
       <i class="fa-solid fa-download"></i>Save image
     </button>
   </div>
@@ -77,6 +145,15 @@ watch(tempIterations, (newIterations) => {
   box-shadow: 0rem 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
   border-radius: 1rem;
   margin-bottom: 2rem;
+}
+
+.sliders-blue-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  width: 95%;
 }
 
 /*drop down list*/
@@ -115,6 +192,20 @@ watch(tempIterations, (newIterations) => {
 
 .slider {
   width: 80%;
+}
+
+.colored {
+  background-image: linear-gradient(
+    to right,
+    red,
+    orange,
+    yellow,
+    green,
+    blue,
+    indigo,
+    violet,
+    red
+  ) !important;
 }
 
 #slider-value {

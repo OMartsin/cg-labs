@@ -1,22 +1,13 @@
-<template>
-  <div class="fractal-image" ref="containerRef">
-    <canvas ref="canvasRef" class="fractal-canvas"></canvas>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
-import { useZoomStore } from '@/stores/zoom';
-import { useIteratiosStore } from '@/stores/iterations';
+import { useFractalsInfoStore } from '@/stores/fractalsinfo'
 
-const iterationsStore = useIteratiosStore();
-const zoomLevelStore = useZoomStore();
-
+const fractalsInfoStore = useFractalsInfoStore()
 
 const containerRef = ref<HTMLElement | null>(null)
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 
-const drawFractal = (zoomLevel: number, iterations: number) => {
+const drawFractal = (zoomLevel: number, iterations: number, hue: number) => {
   if (canvasRef.value && containerRef.value) {
     const containerWidth = containerRef.value.clientWidth
     const containerHeight = containerRef.value.clientHeight
@@ -28,8 +19,9 @@ const drawFractal = (zoomLevel: number, iterations: number) => {
     if (ctx) {
       for (let x = 0; x < containerWidth; x++) {
         for (let y = 0; y < containerHeight; y++) {
-          const zx = ((x / containerWidth) * 5 - 2) / zoomLevel
-          const zy = ((y / containerHeight) * 5 - 2) / zoomLevel
+          const zoomLimit = 2 / zoomLevel;
+          const zx = ((x / containerWidth) * zoomLimit * 2 - zoomLimit)
+          const zy = ((y / containerHeight) * zoomLimit * 2  - zoomLimit)
 
           let a = zx
           let b = zy
@@ -50,8 +42,8 @@ const drawFractal = (zoomLevel: number, iterations: number) => {
             iteration++
           }
 
-          const bright = Math.floor((iteration / 100) * 255)
-          const color = `rgb(${bright}, ${bright}, ${bright})`
+          const saturation =  (iterations - iteration) / iterations * 100
+          const color = `hsl(${hue}, ${saturation}%, 50%)`
 
           ctx.fillStyle = color
           ctx.fillRect(x, y, 1, 1)
@@ -62,19 +54,58 @@ const drawFractal = (zoomLevel: number, iterations: number) => {
 }
 
 onMounted(() => {
-  drawFractal(zoomLevelStore.zoom, iterationsStore.iterations)
+  drawFractal(fractalsInfoStore.zoom, fractalsInfoStore.iterations, fractalsInfoStore.hue)
 })
 
-watch(() => zoomLevelStore.zoom, (newZoomLevel) => {
-  drawFractal(newZoomLevel, iterationsStore.iterations);
-});
+watch(
+  () => fractalsInfoStore.zoom,
+  (newZoomLevel) => {
+    drawFractal(newZoomLevel, fractalsInfoStore.iterations, fractalsInfoStore.hue)
+  }
+)
 
-watch(() => iterationsStore.iterations, (newIterations) => {
-  drawFractal(zoomLevelStore.zoom, newIterations);
-});
+watch(
+  () => fractalsInfoStore.iterations,
+  (newIterations) => {
+    drawFractal(fractalsInfoStore.zoom, newIterations, fractalsInfoStore.hue)
+  }
+)
 
+watch(
+  () => fractalsInfoStore.hue,
+  (newHue) => {
+    drawFractal(fractalsInfoStore.zoom, fractalsInfoStore.iterations, newHue)
+  }
+)
 
+function saveCanvasImage() {
+  const canvas = canvasRef
+  if (!canvas.value) return
+  const dataURL = canvas.value.toDataURL() // Convert canvas content to data URL
+
+  // Create a download link
+  const downloadLink = document.createElement('a')
+  downloadLink.href = dataURL
+  downloadLink.download = 'canvas_image.png' // Specify the download file name
+  downloadLink.click() // Simulate a click on the download link
+}
+
+watch(
+  () => fractalsInfoStore.saveImage,
+  (newSaveImageFn) => {
+    if (newSaveImageFn) {
+      saveCanvasImage()
+      fractalsInfoStore.setSaveImage(false)
+    }
+  }
+)
 </script>
+
+<template>
+  <div class="fractal-image" ref="containerRef">
+    <canvas ref="canvasRef" class="fractal-canvas"></canvas>
+  </div>
+</template>
 
 <style scoped>
 .fractal-image {
@@ -93,6 +124,11 @@ watch(() => iterationsStore.iterations, (newIterations) => {
   width: 97%;
   height: 97%;
   border-radius: 1rem;
+}
+
+.hue-slider {
+  width: 100px;
+  margin-left: 20px;
 }
 
 .zoom-slider {
