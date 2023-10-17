@@ -7,8 +7,7 @@ const fractalsInfoStore = useFractalsInfoStore();
 fractalsInfoStore.setZoom(1);
 fractalsInfoStore.setIterations(50);
 fractalsInfoStore.setHue(0);
-
-
+fractalsInfoStore.setCurrentFractal("sin z * cos z");
 
 </script>
 
@@ -28,6 +27,8 @@ fractalsInfoStore.setHue(0);
         :updateHue = fractalsInfoStore.setHue
         :hue = fractalsInfoStore.hue
         :setSaveImage="fractalsInfoStore.setSaveImage"
+        :currentFractal="fractalsInfoStore.currentFractal"
+        :updateFractalType="fractalsInfoStore.setCurrentFractal"
          />
         <FractalCanvas />
       </div>

@@ -5,6 +5,7 @@ export const useFractalsInfoStore = defineStore('fractalsInfo', () => {
     const iterations = ref(50)
     const zoom = ref(1);
     const hue = ref(0);
+    const currentFractal = ref('Ch z');
     const saveImage = ref(false);
 
     function setIterations(newVal: number) {
@@ -23,5 +24,10 @@ export const useFractalsInfoStore = defineStore('fractalsInfo', () => {
         saveImage.value = newVal
     }
 
-    return { iterations, setIterations, zoom, setZoom, hue, setHue, saveImage, setSaveImage }
+    function setCurrentFractal(newVal: string) {
+        currentFractal.value = newVal
+    }   
+
+    return { iterations, setIterations, zoom, setZoom, hue, 
+        setHue, saveImage, setSaveImage, currentFractal, setCurrentFractal }
 })

@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, defineEmits } from 'vue'
+import { ref } from 'vue'
 
-const { updateZoomLevel, updateIterations, iterations, zoomLevel, updateHue, hue, setSaveImage } =
+const { updateZoomLevel, updateIterations, iterations, zoomLevel, updateHue, 
+  hue, setSaveImage, currentFractal, updateFractalType } =
   defineProps<{
     updateZoomLevel: (newZoomLevel: number) => void
     zoomLevel: number
@@ -10,11 +11,19 @@ const { updateZoomLevel, updateIterations, iterations, zoomLevel, updateHue, hue
     updateHue: (newHue: number) => void
     hue: number
     setSaveImage: (newVal: boolean) => void
+    currentFractal: string
+    updateFractalType: (newVal: string) => void
   }>()
+
+const zoomSliderRef = ref<HTMLInputElement | null>(null)
+const iterationsSliderRef = ref<HTMLInputElement | null>(null)
 
 const tempZoomLevel = ref<number>(zoomLevel)
 const tempIterations = ref<number>(iterations)
 const tempHue = ref<number>(hue)
+const tempFractalType = ref<string>(currentFractal);
+
+// const zoomVisible = ref<boolean>(true)
 
 function setNewHUE() {
   updateHue(tempHue.value)
@@ -26,6 +35,28 @@ function setNewZoom() {
 
 function setNewIterations() {
   updateIterations(tempIterations.value)
+}
+
+function setNewFractalType() {
+  //zoomVisible.value = true
+  iterationsSliderRef.value!.max = "100"
+  updateFractalType(tempFractalType.value)
+  if(tempFractalType.value == "Ch z"){
+    zoomSliderRef.value!.max = "10"
+  }
+  else if(tempFractalType.value == "sin z * cos z"){
+    zoomSliderRef.value!.max = "1000"
+  }
+  else if(tempFractalType.value == "sin z"){
+    zoomSliderRef.value!.max = "100"
+  }
+  else if(tempFractalType.value == "Cut type"){
+    //zoomVisible.value = false
+    zoomSliderRef.value!.max = "10"
+    iterationsSliderRef.value!.max = "6"
+    updateIterations(6)
+    tempIterations.value = 6
+  }
 }
 
 function handleKeyDownZoom(event: Event): void {
@@ -58,10 +89,11 @@ function handleKeyDownHue(event: Event): void {
 <template>
   <div class="fractal-interaction-section">
     <div class="fractal-settings-form">
-      <select class="fractal-type-dropdown" id="fractal0-type-dropdown">
+      <select class="fractal-type-dropdown" v-model="tempFractalType" v-on:change="setNewFractalType" id="fractal0-type-dropdown">
         <option value="Cut type">Cut type</option>
         <option value="Ch z">Ch z</option>
         <option value="sin z * cos z">sin z * cos z</option>
+        <option value="sin z">sin z</option>
       </select>
       <div class="sliders-blue-group">
         <div class="slider-container">
@@ -71,6 +103,7 @@ function handleKeyDownHue(event: Event): void {
           </div>
           <input
             v-model="tempIterations"
+            ref="iterationsSliderRef"
             v-on:mouseup="setNewIterations"
             @keyup="handleKeyDownIterations"
             type="range"
@@ -103,15 +136,16 @@ function handleKeyDownHue(event: Event): void {
     <div class="slider-container">
       <div class="slider-container-data">
         <a>Zoom</a>
-        <a>{{ tempZoomLevel }}</a>
+        
       </div>
       <input
         v-model="tempZoomLevel"
+        ref="zoomSliderRef"
         v-on:mouseup="setNewZoom"
         @keyup="handleKeyDownZoom"
         type="range"
         min="1"
-        max="5"
+        max="10"
         class="slider"
         id="mySlider"
       />
@@ -213,7 +247,7 @@ function handleKeyDownHue(event: Event): void {
 }
 
 .slider {
-  -webkit-appearance: none;
+  appearance: none;
   width: 100%;
   height: 0.5rem;
   border-radius: 0.313rem;
