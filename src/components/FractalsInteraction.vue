@@ -39,10 +39,12 @@ function setNewIterations() {
 
 function setNewFractalType() {
   //zoomVisible.value = true
+  tempZoomLevel.value = 1;
+  updateZoomLevel(1);
   iterationsSliderRef.value!.max = "100"
   updateFractalType(tempFractalType.value)
   if(tempFractalType.value == "Ch z"){
-    zoomSliderRef.value!.max = "10"
+    zoomSliderRef.value!.max = "100"
   }
   else if(tempFractalType.value == "sin z * cos z"){
     zoomSliderRef.value!.max = "1000"
@@ -54,8 +56,8 @@ function setNewFractalType() {
     //zoomVisible.value = false
     zoomSliderRef.value!.max = "10"
     iterationsSliderRef.value!.max = "6"
-    updateIterations(6)
-    tempIterations.value = 6
+    updateIterations(2)
+    tempIterations.value = 2
   }
 }
 

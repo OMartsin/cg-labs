@@ -112,7 +112,7 @@ const drawSinCosFractal = (zoomLevel: number, iterations: number, hue: number) =
           while (iteration < iterations) {
             const aSquared = a * a
             const bSquared = b * b
-            if (aSquared + bSquared > 10) {
+            if (aSquared + bSquared > 200) {
               ctx.fillStyle = '#000000'
               ctx.fillRect(x, y, 1, 1)
               break 
@@ -203,6 +203,9 @@ const drawChFractal = (zoomLevel: number, iterations: number, hue: number) => {
           let b = zy
           let iteration = 0
 
+          let ca = 0.2
+          let cb = 0.8
+
           while (iteration < iterations) {
             const aSquared = a * a
             const bSquared = b * b
@@ -213,8 +216,8 @@ const drawChFractal = (zoomLevel: number, iterations: number, hue: number) => {
             }
 
             // Fractal cosh(z)
-            const newA = Math.cosh(a) * Math.cos(b) + zx
-            const newB = Math.sinh(a) * Math.sin(b) + zy
+            const newA = Math.cosh(a) * Math.cos(b) + ca
+            const newB = Math.sinh(a) * Math.sin(b) + cb
 
             a = newA
             b = newB
