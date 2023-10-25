@@ -7,10 +7,10 @@ const fractalsInfoStore = useFractalsInfoStore()
 const containerRef = ref<HTMLElement | null>(null)
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 
-const axiom = 'F'
-const rule = 'F=F+F--F+F'
-const anglePlus = 85
-const angleMinus = 85
+const axiom = 'F--F--F'
+const rule = 'F=F-F++F-F'
+const anglePlus = 60
+const angleMinus = 60
 let currentSentence = axiom
 let currentLength = 0
 
@@ -49,7 +49,7 @@ function draw(width: number, height: number, rotationAngle = 0) {
   }
 }
 
-function drawCezaroFractal(zoomLevel: number, iterations: number, hue: number) {
+function drawkochFractal(zoomLevel: number, iterations: number, hue: number) {
   if (iterations > 6) {
     iterations = 6
   }
@@ -57,9 +57,10 @@ function drawCezaroFractal(zoomLevel: number, iterations: number, hue: number) {
   if (containerRef.value === null) {
     return
   }
-  const initialLength = (Math.min(containerRef.value.clientWidth, containerRef.value.clientHeight)) * zoomLevel
-  * Math.pow(0.725, -iterations)
-  const a = initialLength * Math.pow(0.725, iterations)
+  const initialLength =
+    Math.min(containerRef.value.clientWidth, containerRef.value.clientHeight) *
+    zoomLevel *
+    Math.pow(0.725, -iterations)
   currentLength = initialLength
 
   if (canvasRef.value && containerRef.value) {
@@ -71,26 +72,23 @@ function drawCezaroFractal(zoomLevel: number, iterations: number, hue: number) {
 
     for (let i = 0; i < iterations; i++) {
       currentSentence = applyRules(currentSentence)
-      currentLength /= 3 // Reduce the length for each iteration
+      currentLength /= 4.15 // Reduce the length for each iteration
     }
 
     const color = `hsl(${hue}, ${100}%, 50%)`
     const ctx = canvasRef.value.getContext('2d')
     if (ctx) {
-      ctx.strokeStyle  = color
+      ctx.strokeStyle = color
     }
 
-    const centerDelta = (Math.abs(containerRef.value.clientWidth - containerRef.value.clientHeight) / 2) / zoomLevel
+    const centerDelta =
+      Math.abs(containerRef.value.clientWidth - containerRef.value.clientHeight) / 2 / zoomLevel
 
-    draw(canvasRef.value.width - centerDelta, canvasRef.value.height, -90)
-    draw(canvasRef.value.width - centerDelta, canvasRef.value.height - a, 180)
-    draw(canvasRef.value.width - a - centerDelta, canvasRef.value.height, 0)
-    draw(canvasRef.value.width - a - centerDelta, canvasRef.value.height - a, 90)
+    draw(canvasRef.value.width - centerDelta, canvasRef.value.height, 0)
   }
 }
 
-const drawSinCosFractal = (zoomLevel: number, iterations: number, hue: number) => {
-  console.log('drawSinCosFractal')
+const drawTanFractal = (zoomLevel: number, iterations: number, hue: number) => {
   if (canvasRef.value && containerRef.value) {
     const containerWidth = containerRef.value.clientWidth
     const containerHeight = containerRef.value.clientHeight
@@ -115,12 +113,30 @@ const drawSinCosFractal = (zoomLevel: number, iterations: number, hue: number) =
             if (aSquared + bSquared > 200) {
               ctx.fillStyle = '#000000'
               ctx.fillRect(x, y, 1, 1)
-              break 
+              break
             }
 
-            // Fractal sin(z) * cos(z)
-            const newA = Math.sin(a) * Math.cos(a) - Math.sinh(b) * Math.cosh(b) + zx
-            const newB = Math.sin(a) * Math.cosh(b) + Math.cos(a) * Math.sinh(b) + zy
+            // Fractal tg(z^2)
+            const newA =
+              Math.sin(a * a) * Math.cos(b * b) -
+              (Math.cos(a * a) * Math.sin(b * b)) /
+                (Math.cos(a * a) * Math.cos(b * b) - Math.sin(a * a) * Math.sin(b * b)) +
+              zx
+            const newB =
+              (2 * a * Math.sin(b * b) + 2 * b * Math.cos(a * a)) /
+                (2 * a * Math.cos(b * b) - 2 * b * Math.cos(a * a)) +
+              zy
+
+            // Fractal tg(z^2) Julia set 0.2 + 0.7i
+            // const newA =
+            //   Math.sin(a * a) * Math.cos(b * b) -
+            //   (Math.cos(a * a) * Math.sin(b * b)) /
+            //     (Math.cos(a * a) * Math.cos(b * b) - Math.sin(a * a) * Math.sin(b * b)) +
+            //   0.2
+            // const newB =
+            //   (2 * a * Math.sin(b * b) + 2 * b * Math.cos(a * a)) /
+            //     (2 * a * Math.cos(b * b) - 2 * b * Math.cos(a * a)) +
+            //   0.7
 
             a = newA
             b = newB
@@ -130,102 +146,6 @@ const drawSinCosFractal = (zoomLevel: number, iterations: number, hue: number) =
           const saturation = ((iterations - iteration) / iterations) * 100
           const color = `hsl(${hue - iteration * 5}, ${saturation}%, 50%)`
 
-          ctx.fillStyle = color
-          ctx.fillRect(x, y, 1, 1)
-        }
-      }
-    }
-  }
-}
-
-const drawSinFractal = (zoomLevel: number, iterations: number, hue: number) => {
-  console.log('drawSinFractal')
-  if (canvasRef.value && containerRef.value) {
-    const containerWidth = containerRef.value.clientWidth
-    const containerHeight = containerRef.value.clientHeight
-
-    canvasRef.value.width = containerWidth
-    canvasRef.value.height = containerHeight
-
-    const ctx = canvasRef.value.getContext('2d')
-    if (ctx) {
-      for (let x = 0; x < containerWidth; x++) {
-        for (let y = 0; y < containerHeight; y++) {
-          const zx = ((x / containerWidth) * 4 - 2) / zoomLevel
-          const zy = ((y / containerHeight) * 4 - 2) / zoomLevel
-
-          let a = zx
-          let b = zy
-          let iteration = 0
-
-          while (iteration < iterations) {
-            const aSquared = a * a
-            const bSquared = b * b
-            if (aSquared + bSquared > 100) {
-              ctx.fillStyle = '#000000'
-              ctx.fillRect(x, y, 1, 1)
-              break 
-            }
-
-            const newA = Math.sin(a) * Math.cosh(b) + zx
-            const newB = Math.cos(a) * Math.sinh(b) + zy
-
-            a = newA
-            b = newB
-            iteration++
-          }
-          const saturation = ((iterations - iteration) / iterations) * 100
-          const color = `hsl(${hue - iteration * 5}, ${saturation}%, 50%)`
-          ctx.fillStyle = color
-          ctx.fillRect(x, y, 1, 1)
-        }
-      }
-    }
-  }
-}
-
-const drawChFractal = (zoomLevel: number, iterations: number, hue: number) => {
-  if (canvasRef.value && containerRef.value) {
-    const containerWidth = containerRef.value.clientWidth
-    const containerHeight = containerRef.value.clientHeight
-
-    canvasRef.value.width = containerWidth
-    canvasRef.value.height = containerHeight
-
-    const ctx = canvasRef.value.getContext('2d')
-    if (ctx) {
-      for (let x = 0; x < containerWidth; x++) {
-        for (let y = 0; y < containerHeight; y++) {
-          const zx = ((x / containerWidth) * 4 - 2) / zoomLevel
-          const zy = ((y / containerHeight) * 4 - 2) / zoomLevel
-
-          let a = zx
-          let b = zy
-          let iteration = 0
-
-          let ca = 0.2
-          let cb = 0.8
-
-          while (iteration < iterations) {
-            const aSquared = a * a
-            const bSquared = b * b
-            if (aSquared + bSquared > 100) {
-              ctx.fillStyle = '#000000'
-              ctx.fillRect(x, y, 1, 1)
-              break 
-            }
-
-            // Fractal cosh(z)
-            const newA = Math.cosh(a) * Math.cos(b) + ca
-            const newB = Math.sinh(a) * Math.sin(b) + cb
-
-            a = newA
-            b = newB
-            iteration++
-          }
-
-          const saturation = ((iterations - iteration) / iterations) * 100
-          const color = `hsl(${hue - iteration * 5}, ${saturation}%, 50%)`
           ctx.fillStyle = color
           ctx.fillRect(x, y, 1, 1)
         }
@@ -297,21 +217,11 @@ function choiseFractalType(
   hue: number,
   fractalType: string
 ) {
-  if (fractalType === 'Cut type') {
-    console.log('Cut type')
-    drawCezaroFractal(zoomLevel, iterations, hue)
+  if (fractalType === 'Koch snowflake') {
+    drawkochFractal(zoomLevel, iterations, hue)
   }
-  if (fractalType === 'Ch z') {
-    console.log('Ch z')
-    drawChFractal(zoomLevel, iterations, hue)
-  }
-  if (fractalType === 'sin z * cos z') {
-    console.log('sin z * cos z')
-    drawSinCosFractal(zoomLevel, iterations, hue)
-  }
-  if (fractalType === 'sin z') {
-    console.log('sin z')
-    drawSinFractal(zoomLevel, iterations, hue)
+  else{
+    drawTanFractal(zoomLevel, iterations, hue)
   }
 }
 

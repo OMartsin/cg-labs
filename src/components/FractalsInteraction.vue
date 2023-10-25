@@ -22,8 +22,7 @@ const tempZoomLevel = ref<number>(zoomLevel)
 const tempIterations = ref<number>(iterations)
 const tempHue = ref<number>(hue)
 const tempFractalType = ref<string>(currentFractal);
-
-// const zoomVisible = ref<boolean>(true)
+tempFractalType.value = "tan(z^2)";
 
 function setNewHUE() {
   updateHue(tempHue.value)
@@ -38,22 +37,11 @@ function setNewIterations() {
 }
 
 function setNewFractalType() {
-  //zoomVisible.value = true
   tempZoomLevel.value = 1;
   updateZoomLevel(1);
   iterationsSliderRef.value!.max = "100"
   updateFractalType(tempFractalType.value)
-  if(tempFractalType.value == "Ch z"){
-    zoomSliderRef.value!.max = "100"
-  }
-  else if(tempFractalType.value == "sin z * cos z"){
-    zoomSliderRef.value!.max = "1000"
-  }
-  else if(tempFractalType.value == "sin z"){
-    zoomSliderRef.value!.max = "100"
-  }
-  else if(tempFractalType.value == "Cut type"){
-    //zoomVisible.value = false
+  if(tempFractalType.value == "Koch snowflake"){
     zoomSliderRef.value!.max = "10"
     iterationsSliderRef.value!.max = "6"
     updateIterations(2)
@@ -92,10 +80,8 @@ function handleKeyDownHue(event: Event): void {
   <div class="fractal-interaction-section">
     <div class="fractal-settings-form">
       <select class="fractal-type-dropdown" v-model="tempFractalType" v-on:change="setNewFractalType" id="fractal0-type-dropdown">
-        <option value="Cut type">Cut type</option>
-        <option value="Ch z">Ch z</option>
-        <option value="sin z * cos z">sin z * cos z</option>
-        <option value="sin z">sin z</option>
+        <option value="Koch snowflake">Koch snowflake</option>
+        <option value="tan(z^2)">tan(z^2)</option>
       </select>
       <div class="sliders-blue-group">
         <div class="slider-container">
