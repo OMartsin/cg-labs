@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "animate.css": "^4.1.1",
+    "get-canvas-pixel-color": "^2.0.1",
     "pinia": "^2.1.6",
     "vue": "^3.3.4",
     "vue-drawing-canvas": "^1.0.14",

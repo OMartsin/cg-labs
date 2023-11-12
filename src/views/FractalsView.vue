@@ -9,6 +9,7 @@ fractalsInfoStore.setIterations(50);
 fractalsInfoStore.setHue(0);
 fractalsInfoStore.setCurrentFractal("sin z * cos z");
 
+
 </script>
 
 <template>

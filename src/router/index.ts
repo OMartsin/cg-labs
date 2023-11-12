@@ -7,6 +7,11 @@ const router = createRouter({
       path: '/fractals',
       name: 'fractals',
       component: () => import('../views/FractalsView.vue')
+    },
+    {
+      path: '/colors',
+      name: 'colors',
+      component: () => import('../views/ColoursView.vue')
     }
   ]
 })
