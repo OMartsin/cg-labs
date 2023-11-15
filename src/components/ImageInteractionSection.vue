@@ -70,7 +70,7 @@ watch(
           type="range"
           min="0"
           max="360"
-          class="slider"
+          class="slider colored"
           id="hue-value-slider"
           disabled
         />
@@ -110,22 +110,22 @@ watch(
           <a>Cayn</a>
           <a>{{cmyk.cyan}}</a>
         </div>
-        <input v-model="cmyk.cyan" type="range" min="0" max="100" class="slider" id="cyan-value-slider" disabled/>
+        <input v-model="cmyk.cyan" type="range" min="0" max="100" class="slider cyan" id="cyan-value-slider" disabled/>
         <div class="slider-container-data">
           <a>Magenta</a>
           <a>{{ cmyk.magenta }}</a>
         </div>
-        <input v-model="cmyk.magenta" type="range" min="0" max="100" class="slider" id="magenta-value-slider" disabled/>
+        <input v-model="cmyk.magenta" type="range" min="0" max="100" class="slider magenta" id="magenta-value-slider" disabled/>
         <div class="slider-container-data">
           <a>Yellow</a>
           <a>{{cmyk.yellow}}</a>
         </div>
-        <input v-model="cmyk.yellow" type="range" min="0" max="100" class="slider" id="yellow-value-slider" disabled/>
+        <input v-model="cmyk.yellow" type="range" min="0" max="100" class="slider yellow" id="yellow-value-slider" disabled/>
         <div class="slider-container-data">
           <a>Black</a>
           <a>{{cmyk.black}}</a>
         </div>
-        <input v-model="cmyk.black" type="range" min="0" max="100" class="slider" id="black-value-slider" disabled/>
+        <input v-model="cmyk.black" type="range" min="0" max="100" class="slider black" id="black-value-slider" disabled/>
       </div>
     </div>
 
@@ -187,6 +187,39 @@ watch(
     blue,
     indigo,
     violet
+  ) !important;
+}
+
+.black{
+  background-image: linear-gradient(
+    to right,
+    white,
+    gray,
+    black
+  ) !important;
+}
+
+.cyan{
+  background-image: linear-gradient(
+    to right,
+    white,
+    cyan
+  ) !important;
+}
+
+.magenta{
+  background-image: linear-gradient(
+    to right,
+    white,
+    magenta
+  ) !important;
+}
+
+.yellow{
+  background-image: linear-gradient(
+    to right,
+    white,
+    yellow
   ) !important;
 }
 .hsl-settings-form {

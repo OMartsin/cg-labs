@@ -64,19 +64,23 @@ const loadImage = (imagePath: string) => {
 };
 
 const handleMouseMove = (event: MouseEvent) => {
-  const canvas = canvasRef.value
-  if (!canvas) return
-  let pos = {
-    x: canvas.offsetLeft,
-    y: canvas.offsetTop
-  }
-  const mouseX = event.pageX - pos.x
-  const mouseY = event.pageY - pos.y
-  const ctx = canvas.getContext('2d')
-  if (!ctx) return
-  const imageData = ctx.getImageData(mouseX, mouseY, 1, 1).data
+  const canvas = canvasRef.value;
+  if (!canvas) return;
 
-  const [red, green, blue, alpha] = imageData
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+
+  const mouseX = (event.clientX - rect.left) * scaleX;
+  const mouseY = (event.clientY - rect.top) * scaleY;
+
+  const imageData = ctx.getImageData(mouseX, mouseY, 1, 1).data;
+
+  // imageData is a Uint8ClampedArray with RGBA values
+  const [red, green, blue, alpha] = imageData;
 
   imageInfoStore.setCMYK(rgbToCmyk({ red, green, blue }))
   console.log({ red, green, blue })

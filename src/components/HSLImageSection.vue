@@ -20,9 +20,6 @@ const { title, loadButtonText, canvasRedraw, rgbToHsl } = defineProps<{
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 const fileInputRef = ref<HTMLInputElement | null>(null)
 const iconClass = ref('fas fa-upload')
-const mouseX = ref(0)
-const mouseY = ref(0)
-const color = ref('')
 
 onMounted(() => {
   canvasRedraw(canvasRef.value, null, null)
@@ -60,6 +57,7 @@ const loadImage = (imagePath: string) => {
   }
 
   const image = new Image()
+
   image.onload = () => {
     if (canvas) {
       canvas.width = image.width
@@ -69,6 +67,7 @@ const loadImage = (imagePath: string) => {
   }
   image.src = imagePath
 }
+
 
 watch(canvasRef, (newValue: HTMLCanvasElement | null) => {
   canvasRedraw(newValue, null, null)
@@ -88,25 +87,27 @@ watch(
   }
 )
 const handleMouseMove = (event: MouseEvent) => {
-  const canvas = canvasRef.value
-  if (!canvas) return
-  let pos = {
-    x: canvas.offsetLeft,
-    y: canvas.offsetTop
-  }
-  const rect = canvas.getBoundingClientRect()
-  const mouseX = event.pageX - pos.x
-  const mouseY = event.pageY - pos.y
-  const ctx = canvas.getContext('2d')
-  if (!ctx) return
-  const imageData = ctx.getImageData(mouseX, mouseY, 1, 1).data
+  const canvas = canvasRef.value;
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+
+  const mouseX = (event.clientX - rect.left) * scaleX;
+  const mouseY = (event.clientY - rect.top) * scaleY;
+
+  const imageData = ctx.getImageData(mouseX, mouseY, 1, 1).data;
 
   // imageData is a Uint8ClampedArray with RGBA values
-  const [red, green, blue, alpha] = imageData
+  const [red, green, blue, alpha] = imageData;
 
-  imageInfoStore.setHSL(rgbToHsl({ red, green, blue }))
-  console.log({ red, green, blue })
-}
+  imageInfoStore.setHSL(rgbToHsl({ red, green, blue }));
+  console.log({ red, green, blue });
+};
 
 </script>
 
