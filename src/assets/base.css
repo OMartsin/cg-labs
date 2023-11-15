@@ -27,3 +27,16 @@ input, button, textarea, select {
 .fa-solid {
   padding-right: 0.75rem;
 }
+
+.colored{
+  background-image: linear-gradient(
+    to right,
+    red,
+    yellow,
+    green,
+    cyan,
+    blue,
+    magenta,
+    red
+  ) !important
+}

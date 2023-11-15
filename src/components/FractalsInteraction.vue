@@ -230,20 +230,6 @@ function handleKeyDownHue(event: Event): void {
   width: 80%;
 }
 
-.colored {
-  background-image: linear-gradient(
-    to right,
-    red,
-    orange,
-    yellow,
-    green,
-    blue,
-    indigo,
-    violet,
-    red
-  ) !important;
-}
-
 #slider-value {
   margin-top: 0.625rem;
 }

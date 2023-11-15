@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useColorsInfoStore } from '@/stores/colorsinfo'
-import type { HSLPoint, RGBPoint } from '@/types'
+import { type FragmentBounds, type HSLPoint, type RGBPoint } from '@/types'
 
 import { ref, defineProps, onMounted, watch } from 'vue'
 
@@ -12,7 +12,8 @@ const { title, loadButtonText, canvasRedraw, rgbToHsl } = defineProps<{
   canvasRedraw: (
     canvas: HTMLCanvasElement | null,
     colorHue: number | null,
-    colorSaturation: number | null
+    colorSaturation: number | null,
+    fragmentBounds: FragmentBounds | null
   ) => void
   rgbToHsl: (rgbPoint: RGBPoint) => HSLPoint
 }>()
@@ -20,9 +21,88 @@ const { title, loadButtonText, canvasRedraw, rgbToHsl } = defineProps<{
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 const fileInputRef = ref<HTMLInputElement | null>(null)
 const iconClass = ref('fas fa-upload')
+const selection = ref<FragmentBounds>({ startX: 0, startY: 0, endX: 0, endY: 0 });
+const isSelecting = ref(false)
+const imagePathRef = ref('');
+
+
+const startSelection = (event: MouseEvent) => {
+  loadImage(imagePathRef.value)
+  isSelecting.value = true
+  const canvas = canvasRef.value
+  if (!canvas) return
+
+  const rect = canvas.getBoundingClientRect()
+  const scaleX = canvas.width / rect.width
+  const scaleY = canvas.height / rect.height
+
+  selection.value.startX = (event.clientX - rect.left) * scaleX
+  selection.value.startY = (event.clientY - rect.top) * scaleY
+}
+
+const updateSelection = (event: MouseEvent) => {
+  handleMouseMove(event)
+  if (!isSelecting.value) return
+
+  const canvas = canvasRef.value
+  if (!canvas) return
+
+  const rect = canvas.getBoundingClientRect()
+  const scaleX = canvas.width / rect.width
+  const scaleY = canvas.height / rect.height
+
+  selection.value.endX = (event.clientX - rect.left) * scaleX
+  selection.value.endY = (event.clientY - rect.top) * scaleY
+}
+
+const endSelection = () => {
+  
+  isSelecting.value = false
+
+  // Draw the selection rectangle
+  const canvas = canvasRef.value
+  const ctx = canvas?.getContext('2d')
+  if (!ctx) return
+
+  ctx.strokeStyle = '#ff0000'
+  ctx.lineWidth = 2
+  ctx.strokeRect(
+    selection.value.startX,
+    selection.value.startY,
+    selection.value.endX - selection.value.startX,
+    selection.value.endY - selection.value.startY
+  )
+  if(selection.value.startX > selection.value.endX){
+    let temp = selection.value.startX
+    selection.value.startX = selection.value.endX
+    selection.value.endX = temp
+  }
+  if(selection.value.startY > selection.value.endY){
+    let temp = selection.value.startY
+    selection.value.startY = selection.value.endY
+    selection.value.endY = temp
+  }
+  console.log(selection.value)
+  canvasRedraw(canvasRef.value, imageInfoStore.hue, imageInfoStore.saturation, selection.value)
+}
+
+function cancelSelectionDelete(){
+    isSelecting.value = false
+    loadImage(imagePathRef.value)
+    selection.value = { startX: 0, startY: 0, endX: 0, endY: 0 }
+}
+
+function cancelSelectionLeave(){
+  if(isSelecting.value) {
+    isSelecting.value = false
+    loadImage(imagePathRef.value)
+    selection.value = { startX: 0, startY: 0, endX: 0, endY: 0 }
+  }
+}
+
 
 onMounted(() => {
-  canvasRedraw(canvasRef.value, null, null)
+  canvasRedraw(canvasRef.value, null, null, null)
 })
 
 const openImageDialog = () => {
@@ -38,8 +118,9 @@ const handleFileChange = (event: Event) => {
 
   if (files && files.length > 0) {
     const imagePath = URL.createObjectURL(files[0])
+    imagePathRef.value = imagePath
     loadImage(imagePath)
-    canvasRedraw(canvasRef.value, null, null)
+    canvasRedraw(canvasRef.value, null, null, null)
   }
 
   if (fileInput) {
@@ -70,20 +151,30 @@ const loadImage = (imagePath: string) => {
 
 
 watch(canvasRef, (newValue: HTMLCanvasElement | null) => {
-  canvasRedraw(newValue, null, null)
+  canvasRedraw(newValue, null, null, null)
 })
 watch(
   () => imageInfoStore.hue,
   (newValue) => {
     console.log('hue: ' + newValue)
-    canvasRedraw(canvasRef.value, newValue, imageInfoStore.saturation)
+    if(selection.value.startX != 0 || selection.value.startY != 0 || selection.value.endX != 0 || selection.value.endY != 0){
+      canvasRedraw(canvasRef.value, newValue, imageInfoStore.saturation, selection.value)
+    }
+    else{
+      canvasRedraw(canvasRef.value, newValue, imageInfoStore.saturation, null)
+    }
   }
 )
 watch(
   () => imageInfoStore.saturation,
   (newValue) => {
     console.log('saturation: ' + newValue)
-    canvasRedraw(canvasRef.value, imageInfoStore.hue, newValue)
+    if(selection.value.startX != 0 || selection.value.startY != 0 || selection.value.endX != 0 || selection.value.endY != 0){
+      canvasRedraw(canvasRef.value, imageInfoStore.hue, newValue, selection.value)
+    }
+    else{
+      canvasRedraw(canvasRef.value, imageInfoStore.hue, newValue, null)
+    }
   }
 )
 const handleMouseMove = (event: MouseEvent) => {
@@ -112,8 +203,16 @@ const handleMouseMove = (event: MouseEvent) => {
 </script>
 
 <template>
-  <div class="image-section">
-    <canvas ref="canvasRef" @mousemove="handleMouseMove" class="image-form"></canvas>
+  <div class="image-section"
+  @keydown.delete="cancelSelectionDelete">
+    <canvas ref="canvasRef"       
+      @mousedown="startSelection"
+      @mouseup="endSelection"
+      @mouseleave="cancelSelectionLeave"
+      @mousemove="updateSelection"
+      tabindex="0" 
+      class="image-form">
+    </canvas>
     <h3>{{ title }}</h3>
     <button class="image-button" @click="openImageDialog">
       <i :class="iconClass"></i>{{ loadButtonText }}

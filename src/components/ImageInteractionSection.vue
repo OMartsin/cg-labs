@@ -177,19 +177,6 @@ watch(
   background-color: rgba(181, 199, 65, 0);
 }
 
-.colored {
-  background-image: linear-gradient(
-    to right,
-    red,
-    orange,
-    yellow,
-    green,
-    blue,
-    indigo,
-    violet
-  ) !important;
-}
-
 .black{
   background-image: linear-gradient(
     to right,

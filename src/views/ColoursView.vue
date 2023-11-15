@@ -2,10 +2,10 @@
 import ImageInteractionSection from '@/components/ImageInteractionSection.vue'
 import HSLImageSection from '@/components/HSLImageSection.vue'
 import CMYKImageSection from '@/components/CMYKImageSection.vue'
-import type { CMYKPoint, HSLPoint, RGBPoint } from '@/types'
+import type { CMYKPoint, FragmentBounds, HSLPoint, RGBPoint } from '@/types'
 import { ref } from 'vue'
 
-const firstTitle = ref('HSV')
+const firstTitle = ref('HSL')
 const secondTitle = ref('CMYK')
 const firstButtonText = ref('Upload image')
 
@@ -40,7 +40,8 @@ function canvasRgbImageToCMYK(canvas: HTMLCanvasElement | null) {
 function canvasRgbImageToHSLWithColorSaturation(
   canvas: HTMLCanvasElement | null,
   colorHue: number | null,
-  colorSaturation: number | null
+  colorSaturation: number | null,
+  fragmentBounds: FragmentBounds | null
 ) {
   if (canvas === null) {
     console.error('Canvas is null')
@@ -57,11 +58,26 @@ function canvasRgbImageToHSLWithColorSaturation(
   const data: Uint8ClampedArray = imageData.data
 
   for (let i = 0; i < data.length; i += 4) {
-    const rgbPoint: RGBPoint = { red: data[i], green: data[i + 1], blue: data[i + 2] }
-    const hslPoint: HSLPoint = rgbToHsl(rgbPoint)
+    const x = (i / 4) % canvas.width;
+    const y = Math.floor(i / (4 * canvas.width));
+
+    if (fragmentBounds && (
+      x < fragmentBounds.startX ||
+      x > fragmentBounds.endX ||
+      y < fragmentBounds.startY ||
+      y > fragmentBounds.endY
+    )) {
+      continue;
+    }
     if (colorHue === null || colorSaturation === null) {
       continue
     }
+    const rgbPoint: RGBPoint = { red: data[i], green: data[i + 1], blue: data[i + 2] }
+    const hslPoint: HSLPoint = rgbToHsl(rgbPoint)
+    let colourBoundRight = +colorHue + +range
+    let colourBoundLeft = colorHue - range
+    colourBoundLeft = colourBoundLeft < 0 ? 360 + colourBoundLeft : colourBoundLeft
+    colourBoundRight = colourBoundRight > 360 ? colourBoundRight - 360 : colourBoundRight
     if (colorHue - range <= hslPoint.h && hslPoint.h <= +colorHue + +range) {
       hslPoint.s = colorSaturation
       const afterRgbPoint = HSLToRGB(hslPoint)
