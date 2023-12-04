@@ -2,19 +2,32 @@
   <header class="header-item">
     <div class="header-item-content-div">
       <button class="header-button" id="home-button"><i class="fa-solid fa-house"></i>Home</button>
-      <button class="header-button" id="activity-button">
+      <button class="header-button" @click="toggleDropdown" id="activity-button">
         <i class="fa-solid fa-bars"></i>Activity
       </button>
       <button class="header-button" id="contact-us-button">
         <i class="fa-solid fa-phone-volume"></i>Contact us
       </button>
+      <ActivityDropdown 
+        :show="dropdown" 
+        :setShowValue="setShowValue"
+      v-if="dropdown" />
     </div>
   </header>
 </template>
 
-<script lang="ts">
-export default {
-  name: 'MainHeader'
+<script setup lang="ts">
+import ActivityDropdown from './ActivityDropdown.vue'
+import { ref } from 'vue'
+const dropdown = ref(false)
+
+function toggleDropdown() {
+  console.log('toggleDropdown')
+  dropdown.value = !dropdown.value
+}
+
+function setShowValue(val: boolean) {
+  dropdown.value = val
 }
 </script>
 

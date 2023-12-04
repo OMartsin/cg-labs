@@ -1,55 +1,159 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 
-import { ref, watch } from 'vue';
+const { updateZoomLevel, updateIterations, iterations, zoomLevel, updateHue, 
+  hue, setSaveImage, currentFractal, updateFractalType } =
+  defineProps<{
+    updateZoomLevel: (newZoomLevel: number) => void
+    zoomLevel: number
+    updateIterations: (newIterations: number) => void
+    iterations: number
+    updateHue: (newHue: number) => void
+    hue: number
+    setSaveImage: (newVal: boolean) => void
+    currentFractal: string
+    updateFractalType: (newVal: string) => void
+  }>()
 
-const { updateZoomLevel, updateIterations, iterations, zoomLevel } = defineProps<{
-  updateZoomLevel: (newZoomLevel: number) => void;
-  zoomLevel: number;
-  updateIterations: (newIterations: number) => void;
-  iterations: number;
-}>();
+const zoomSliderRef = ref<HTMLInputElement | null>(null)
+const iterationsSliderRef = ref<HTMLInputElement | null>(null)
 
-const tempZoomLevel = ref<number>(zoomLevel);
-const tempIterations = ref<number>(iterations);
+const tempZoomLevel = ref<number>(zoomLevel)
+const tempIterations = ref<number>(iterations)
+const tempHue = ref<number>(hue)
+const tempFractalType = ref<string>(currentFractal);
 
-watch(tempZoomLevel, (newZoomLevel) => {
-  updateZoomLevel(newZoomLevel);
-});
+// const zoomVisible = ref<boolean>(true)
 
-watch(tempIterations, (newIterations) => {
-  updateIterations(newIterations);
-});
+function setNewHUE() {
+  updateHue(tempHue.value)
+}
 
+function setNewZoom() {
+  updateZoomLevel(tempZoomLevel.value)
+}
 
+function setNewIterations() {
+  updateIterations(tempIterations.value)
+}
 
+function setNewFractalType() {
+  //zoomVisible.value = true
+  tempZoomLevel.value = 1;
+  updateZoomLevel(1);
+  iterationsSliderRef.value!.max = "100"
+  updateFractalType(tempFractalType.value)
+  if(tempFractalType.value == "Ch z"){
+    zoomSliderRef.value!.max = "100"
+  }
+  else if(tempFractalType.value == "sin z * cos z"){
+    zoomSliderRef.value!.max = "1000"
+  }
+  else if(tempFractalType.value == "sin z"){
+    zoomSliderRef.value!.max = "100"
+  }
+  else if(tempFractalType.value == "Cut type"){
+    //zoomVisible.value = false
+    zoomSliderRef.value!.max = "10"
+    iterationsSliderRef.value!.max = "6"
+    updateIterations(2)
+    tempIterations.value = 2
+  }
+}
+
+function handleKeyDownZoom(event: Event): void {
+  const isKeyboardEvent = event instanceof KeyboardEvent
+  console.log('Check if keyboard event')
+  if (isKeyboardEvent) {
+    console.log('isKeyboardEvent')
+    setNewZoom()
+  }
+}
+function handleKeyDownIterations(event: Event): void {
+  const isKeyboardEvent = event instanceof KeyboardEvent
+  console.log('Check if keyboard event')
+  if (isKeyboardEvent) {
+    console.log('isKeyboardEvent')
+    setNewIterations()
+  }
+}
+
+function handleKeyDownHue(event: Event): void {
+  const isKeyboardEvent = event instanceof KeyboardEvent
+  console.log('Check if keyboard event')
+  if (isKeyboardEvent) {
+    console.log('isKeyboardEvent')
+    setNewHUE()
+  }
+}
 </script>
 
 <template>
   <div class="fractal-interaction-section">
     <div class="fractal-settings-form">
-      <select class="fractal-type-dropdown" id="fractal0-type-dropdown">
+      <select class="fractal-type-dropdown" v-model="tempFractalType" v-on:change="setNewFractalType" id="fractal0-type-dropdown">
         <option value="Cut type">Cut type</option>
         <option value="Ch z">Ch z</option>
         <option value="sin z * cos z">sin z * cos z</option>
+        <option value="sin z">sin z</option>
       </select>
-
-      <div class="slider-container">
-        <div class="slider-container-data">
-          <a>Iterations</a>
-          <a>{{ tempIterations }}</a>
+      <div class="sliders-blue-group">
+        <div class="slider-container">
+          <div class="slider-container-data">
+            <a>Iterations</a>
+            <a>{{ tempIterations }}</a>
+          </div>
+          <input
+            v-model="tempIterations"
+            ref="iterationsSliderRef"
+            v-on:mouseup="setNewIterations"
+            @keyup="handleKeyDownIterations"
+            type="range"
+            min="0"
+            max="100"
+            class="slider"
+            id="mySlider"
+          />
         </div>
-        <input v-model="tempIterations" type="range" min="0" max="100" class="slider" id="mySlider" />
+
+        <div class="slider-container">
+          <div class="slider-container-data">
+            <a>Hue</a>
+            <a>{{ tempHue }}</a>
+          </div>
+          <input
+            v-model="tempHue"
+            v-on:mouseup="setNewHUE"
+            @keyup="handleKeyDownHue"
+            type="range"
+            min="1"
+            max="360"
+            class="colored slider"
+            id="mySlider"
+          />
+        </div>
       </div>
     </div>
 
     <div class="slider-container">
       <div class="slider-container-data">
         <a>Zoom</a>
-        <a>{{ zoomLevel }}</a>
+        
       </div>
-      <input v-model="tempZoomLevel" type="range" min="1" max="5" class="slider" id="mySlider" />
+      <input
+        v-model="tempZoomLevel"
+        ref="zoomSliderRef"
+        v-on:mouseup="setNewZoom"
+        @keyup="handleKeyDownZoom"
+        type="range"
+        min="1"
+        max="10"
+        class="slider"
+        id="mySlider"
+      />
     </div>
-    <button class="save-button" id="save-button">
+
+    <button class="save-button" id="save-button" @click="setSaveImage(true)">
       <i class="fa-solid fa-download"></i>Save image
     </button>
   </div>
@@ -77,6 +181,15 @@ watch(tempIterations, (newIterations) => {
   box-shadow: 0rem 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
   border-radius: 1rem;
   margin-bottom: 2rem;
+}
+
+.sliders-blue-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  width: 95%;
 }
 
 /*drop down list*/
@@ -122,7 +235,7 @@ watch(tempIterations, (newIterations) => {
 }
 
 .slider {
-  -webkit-appearance: none;
+  appearance: none;
   width: 100%;
   height: 0.5rem;
   border-radius: 0.313rem;
