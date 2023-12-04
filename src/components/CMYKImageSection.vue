@@ -60,6 +60,7 @@ const loadImage = (imagePath: string) => {
       ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
     }
   };
+  canvasRedraw(canvas);
   image.src = imagePath;
 };
 
