@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
-import { Rectangle } from '@/geometry'
-import { useRectangleInfoStore } from '@/stores/rectangle'
+import { Parallelogram } from '@/geometry'
+import { useRectangleInfoStore } from '@/stores/parallelogram'
 
 const canvas = ref<HTMLCanvasElement | null>(null)
 const {
-  getRectangle,
-  getSaveRectangle,
+  getParalelogram,
+  getSaveParalelogram,
   getIsDrawing,
   getRotate,
   getZoom,
@@ -27,7 +27,7 @@ function gridToCanvas(x: number, y: number) {
   return [canvasX, canvasY]
 }
 
-function drawRectangle(rectangle: Rectangle, ctx: CanvasRenderingContext2D) {
+function drawRectangle(rectangle: Parallelogram, ctx: CanvasRenderingContext2D) {
   const vertices = rectangle.vertices.map((v) => gridToCanvas(v[0], v[1]))
   ctx.beginPath()
   ctx.moveTo(vertices[0][0], vertices[0][1])
@@ -106,15 +106,15 @@ onMounted(() => {
     const ctx = canvas.value.getContext('2d')
     if (ctx) {
       drawGrid(ctx, canvas.value.width, canvas.value.height)
-      console.log(getRectangle())
-      drawRectangle(getRectangle(), ctx)
+      console.log(getParalelogram())
+      drawRectangle(getParalelogram(), ctx)
     }
   }
 })
 
 watch(
-  getRectangle,
-  (newRectangle: Rectangle) => {
+  getParalelogram,
+  (newRectangle: Parallelogram) => {
     if (canvas.value) {
       const ctx = canvas.value.getContext('2d')
       if (ctx) {
@@ -151,7 +151,7 @@ function startAnimation() {
   currentFrame = 0
   rotate = getRotate()
   zoom = getZoom()
-  const center = getRectangle().getCenter()
+  const center = getParalelogram().getCenter()
   x = getX() - center[0]
   y = getY() - center[1]
   console.log(x, y)
@@ -165,7 +165,7 @@ function animate() {
     const incrementalX = x / totalFrames
     const incrementalY = y / totalFrames
 
-    getRectangle().scaleRotateAndMove(
+    getParalelogram().scaleRotateAndMove(
       incrementalScale,
       incrementalScale,
       incrementalRotation,
@@ -188,7 +188,7 @@ watch(gridSize, () => {
     if (ctx) {
       ctx.clearRect(0, 0, canvas.value.width, canvas.value.height)
       drawGrid(ctx, canvas.value.width, canvas.value.height)
-      drawRectangle(getRectangle(), ctx)
+      drawRectangle(getParalelogram(), ctx)
     }
   }
 })
@@ -196,12 +196,12 @@ watch(gridSize, () => {
 watch(getIsNeedToSave, () => {
   setIsNeedToSave(false)
   if (!canvas.value) return
-  console.log(getSaveRectangle())
+  console.log(getSaveParalelogram())
   const ctx = canvas.value.getContext('2d')
   if (ctx) {
     ctx.clearRect(0, 0, canvas.value.width, canvas.value.height)
     drawGrid(ctx, canvas.value.width, canvas.value.height)
-    drawRectangle(getSaveRectangle(), ctx)
+    drawRectangle(getSaveParalelogram(), ctx)
   }
 
   const dataURL = canvas.value.toDataURL()
@@ -213,7 +213,7 @@ watch(getIsNeedToSave, () => {
   if (ctx) {
     ctx.clearRect(0, 0, canvas.value.width, canvas.value.height)
     drawGrid(ctx, canvas.value.width, canvas.value.height)
-    drawRectangle(getRectangle(), ctx)
+    drawRectangle(getParalelogram(), ctx)
   }
 })
 </script>
@@ -250,3 +250,4 @@ canvas {
   outline: none;
 }
 </style>
+@/stores/parallelogram

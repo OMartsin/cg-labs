@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Rectangle, type Matrix } from '@/geometry'
-import { useRectangleInfoStore } from '@/stores/rectangle'
+import { Parallelogram, type Matrix } from '@/geometry'
+import { useRectangleInfoStore } from '@/stores/parallelogram'
 import { toast } from 'vue3-toastify'
 
 const store = useRectangleInfoStore()
@@ -13,7 +13,7 @@ const vertices = ref<Matrix>([
   [0, 0, 1]
 ])
 
-vertices.value = store.getRectangle().vertices.map((innerArray) => [...innerArray])
+vertices.value = store.getParalelogram().vertices.map((innerArray) => [...innerArray])
 const rotation = ref(0)
 const zoom = ref(1)
 const xMoveVal = ref(0)
@@ -34,8 +34,8 @@ const updatePoints = () => {
     })
     return
   }
-  store.setRectangle(new Rectangle(vertices.value))
-  vertices.value = store.getRectangle().vertices.map((innerArray) => [...innerArray])
+  store.setRectangle(new Parallelogram(vertices.value))
+  vertices.value = store.getParalelogram().vertices.map((innerArray) => [...innerArray])
 }
 
 const isParallelogram = (vertices: Matrix) => {
@@ -90,7 +90,7 @@ const isParallelogram = (vertices: Matrix) => {
 function startTrasnformation() {
   if (store.getIsDrawing() === false) {
     store.setIsDrawing(true)
-    const center = store.getRectangle().getCenter()
+    const center = store.getParalelogram().getCenter()
     store.setRotate(rotateChecked.value ? rotation.value : 0)
     store.setZoom(zoomChecked.value ? zoom.value : 1)
     store.setX(moveChecked.value ? xMoveVal.value : center[0])
@@ -121,7 +121,7 @@ function saveImage() {
 <template>
   <div class="shapetransform-interaction-section">
     <div class="shapetransform-settings-form">
-      <a class="shape-name">Rectangle</a>
+      <a class="shape-name">Parallelogram</a>
       <div class="coordinates-pair-container">
         <div class="coordinates-section">
           <div>
@@ -453,3 +453,4 @@ function saveImage() {
   justify-content: space-between;
 }
 </style>
+@/stores/parallelogram

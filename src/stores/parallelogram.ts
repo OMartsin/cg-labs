@@ -1,10 +1,10 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { Rectangle } from '@/geometry'
+import { Parallelogram } from '@/geometry'
 
 export const useRectangleInfoStore = defineStore('rectangle', () => {
-    const saveRectangle = ref<Rectangle>(new Rectangle([[0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1]]));
-    const rectangle = ref<Rectangle>(new Rectangle([[0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1]]));
+    const saveRectangle = ref<Parallelogram>(new Parallelogram([[0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1]]));
+    const rectangle = ref<Parallelogram>(new Parallelogram([[0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1]]));
     const rotate = ref(0);
     const zoom = ref(1);
     const x = ref(0);
@@ -28,10 +28,10 @@ export const useRectangleInfoStore = defineStore('rectangle', () => {
         y.value = newVal;
     }
 
-    function setRectangle(newVal: Rectangle) {
+    function setRectangle(newVal: Parallelogram) {
         rectangle.value = newVal;
         const newVerticesVal = newVal.vertices.map(innerArray => [...innerArray]);
-        saveRectangle.value = new Rectangle(newVerticesVal);
+        saveRectangle.value = new Parallelogram(newVerticesVal);
     }
 
     function setIsDrawing(newVal: boolean) {
@@ -58,11 +58,11 @@ export const useRectangleInfoStore = defineStore('rectangle', () => {
         return y.value;
     }
 
-    function getRectangle(): Rectangle {
+    function getParalelogram(): Parallelogram {
         return rectangle.value;
     }
 
-    function getSaveRectangle(): Rectangle {
+    function getSaveParalelogram(): Parallelogram {
         return saveRectangle.value;
     }
 
@@ -75,5 +75,5 @@ export const useRectangleInfoStore = defineStore('rectangle', () => {
     }
     
     return { rectangle, setZoom, setRotate, setRectangle, setIsNeedToSave, setX, setY,
-        getZoom, getRotate, getX, getY, getRectangle, getSaveRectangle, setIsDrawing, getIsDrawing, getIsNeedToSave }
+        getZoom, getRotate, getX, getY, getParalelogram, getSaveParalelogram, setIsDrawing, getIsDrawing, getIsNeedToSave }
 })
