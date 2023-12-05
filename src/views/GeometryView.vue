@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import GeometryInteractionSection from '@/components/GeomertyInteractionSection.vue'
 import GeometryImage from '@/components/GeometryImage.vue'
-import { ref } from 'vue'
 import { Rectangle, type Matrix } from '@/geometry';
 import { useRectangleInfoStore } from '@/stores/rectangle';
 

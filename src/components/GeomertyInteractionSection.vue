@@ -224,7 +224,7 @@ function saveImage() {
           <a><input type="checkbox" id="rotateCheckbox" v-model="rotateChecked" />Rotation</a>
           <a>{{ rotation }}</a>
         </div>
-        <input type="range" v-model="rotation" min="0" max="100" class="slider" id="mySlider" />
+        <input type="range" v-model="rotation" min="-90" max="90" class="slider" id="mySlider" />
       </div>
 
       <div class="slider-container">
