@@ -42,9 +42,7 @@ function navigateTo(routeName: string) {
 
 .dropdown-menu {
     position: absolute;
-    /* ... additional styling ... */
-    top: 100%;
-    /* Position below the button */
+    top: 60%;
     right: 0;
     background-color: #ffffff;
     border-radius: 5px;

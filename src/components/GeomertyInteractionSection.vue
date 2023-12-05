@@ -29,7 +29,9 @@ const updatePoints = () => {
   const D = calculateFourthPoint([A, B, C])
   vertices.value = [A, B, C, D]
   if (isParallelogram(vertices.value) === false) {
-    alert('Not a parallelogram')
+    toast.error('Please enter another coordinates', {
+      position: toast.POSITION.BOTTOM_RIGHT
+    })
     return
   }
   store.setRectangle(new Rectangle(vertices.value))
@@ -59,13 +61,36 @@ const isParallelogram = (vertices: Matrix) => {
     return false
   }
 
+  const angleBetweenLines = (vec1: number[], vec2: number[]) => {
+    const dotProduct = vec1[0] * vec2[0] + vec1[1] * vec2[1]
+    const magnitudeProduct =
+      Math.sqrt(vec1[0] ** 2 + vec1[1] ** 2) * Math.sqrt(vec2[0] ** 2 + vec2[1] ** 2)
+    const cosTheta = dotProduct / magnitudeProduct
+    return Math.acos(cosTheta) * (180 / Math.PI)
+  }
+
+  const angle1 = angleBetweenLines(AB, BC)
+  const angle2 = angleBetweenLines(BC, CD)
+  const angle3 = angleBetweenLines(CD, DA)
+  const angle4 = angleBetweenLines(DA, AB)
+  console.log(angle1, angle2, angle3, angle4)
+
+  if (
+    (angle1 > 179 && angle1 < 181) ||
+    (angle2 > 179 && angle2 < 181) ||
+    (angle3 > 179 && angle3 < 181) ||
+    (angle4 > 179 && angle4 < 181) || 
+    Number.isNaN(angle1) || Number.isNaN(angle2) || Number.isNaN(angle3) || Number.isNaN(angle4) ) {
+    return false
+  }
+
   return true
 }
 
 function startTrasnformation() {
   if (store.getIsDrawing() === false) {
     store.setIsDrawing(true)
-    const center = store.getRectangle().getCenter();
+    const center = store.getRectangle().getCenter()
     store.setRotate(rotateChecked.value ? rotation.value : 0)
     store.setZoom(zoomChecked.value ? zoom.value : 1)
     store.setX(moveChecked.value ? xMoveVal.value : center[0])
@@ -102,7 +127,7 @@ function saveImage() {
           <div>
             <label for="x_value" class="coordinate-label">X:</label>
             <input
-              type="text"
+              type="number"
               class="coordinate-input"
               id="x_value"
               v-model="vertices[0][0]"
@@ -112,7 +137,7 @@ function saveImage() {
           <div>
             <label for="y_value" class="coordinate-label">Y:</label>
             <input
-              type="text"
+              type="number"
               class="coordinate-input"
               id="y_value"
               v-model="vertices[0][1]"
@@ -124,7 +149,7 @@ function saveImage() {
           <div>
             <label for="x_value" class="coordinate-label">X:</label>
             <input
-              type="text"
+              type="number"
               class="coordinate-input"
               id="x_value"
               v-model="vertices[1][0]"
@@ -134,7 +159,7 @@ function saveImage() {
           <div>
             <label for="y_value" class="coordinate-label">Y:</label>
             <input
-              type="text"
+              type="number"
               class="coordinate-input"
               id="y_value"
               v-model="vertices[1][1]"
@@ -148,7 +173,7 @@ function saveImage() {
           <div>
             <label for="x_value" class="coordinate-label">X:</label>
             <input
-              type="text"
+              type="number"
               class="coordinate-input"
               id="x_value"
               v-model="vertices[2][0]"
@@ -158,7 +183,7 @@ function saveImage() {
           <div>
             <label for="y_value" class="coordinate-label">Y:</label>
             <input
-              type="text"
+              type="number"
               class="coordinate-input"
               id="y_value"
               v-model="vertices[2][1]"
@@ -170,7 +195,7 @@ function saveImage() {
           <div>
             <label for="x_value" class="coordinate-label">X:</label>
             <input
-              type="text"
+              type="number"
               class="coordinate-input readonly"
               id="x_value"
               v-model="vertices[3][0]"
@@ -181,7 +206,7 @@ function saveImage() {
           <div>
             <label for="y_value" class="coordinate-label">Y:</label>
             <input
-              type="text"
+              type="number"
               class="coordinate-input readonly"
               id="y_value"
               v-model="vertices[3][1]"
@@ -204,7 +229,7 @@ function saveImage() {
 
       <div class="slider-container">
         <div class="slider-container-data">
-          <a><input type="checkbox" id="zoomCheckbox" v-model="zoomChecked" />Zoom</a>
+          <a><input type="checkbox" id="zoomCheckbox" v-model="zoomChecked" />Scale</a>
           <a>{{ zoom }}</a>
         </div>
         <input
@@ -218,12 +243,15 @@ function saveImage() {
         />
       </div>
       <div class="slider-container">
-        <div><input type="checkbox" id="moveCheckbox" v-model="moveChecked" /> Move rectangle by center to</div>
+        <div>
+          <input type="checkbox" id="moveCheckbox" v-model="moveChecked" /> Move rectangle by center
+          to
+        </div>
         <div class="move-coordinates">
           <div>
             <label for="x_value" class="coordinate-label">X:</label>
             <input
-              type="text"
+              type="number"
               class="coordinate-input"
               id="x_value"
               v-model="xMoveVal"
@@ -234,7 +262,7 @@ function saveImage() {
           <div>
             <label for="y_value" class="coordinate-label">Y:</label>
             <input
-              type="text"
+              type="number"
               class="coordinate-input"
               id="y_value"
               v-model="yMoveVal"
@@ -333,6 +361,7 @@ function saveImage() {
   width: 20%;
   border-radius: 1rem;
   text-align: center;
+  appearance: textfield;
 }
 
 .readonly {

@@ -60,11 +60,29 @@ function drawGrid(ctx: CanvasRenderingContext2D, width: number, height: number) 
   // Draw the axes
   ctx.beginPath()
   ctx.strokeStyle = 'black' // Black color for axes
-  ctx.moveTo(width / 2, margin)
-  ctx.lineTo(width / 2, effectiveHeight + margin)
-  ctx.moveTo(margin, height / 2)
-  ctx.lineTo(effectiveWidth + margin, height / 2)
+  const centerX = width / 2
+  const centerY = height / 2
+  ctx.moveTo(centerX, margin)
+  ctx.lineTo(centerX, effectiveHeight + margin)
+  ctx.moveTo(margin, centerY)
+  ctx.lineTo(effectiveWidth + margin, centerY)
   ctx.stroke()
+
+  // Arrowheads for axes
+  const arrowLength = 10
+  const arrowWidth = 10
+  ctx.beginPath()
+  ctx.moveTo(effectiveWidth + margin, centerY)
+  ctx.lineTo(effectiveWidth + margin - arrowLength, centerY - arrowWidth / 2)
+  ctx.lineTo(effectiveWidth + margin - arrowLength, centerY + arrowWidth / 2)
+  ctx.closePath()
+  ctx.fill()
+  ctx.beginPath()
+  ctx.moveTo(centerX, margin)
+  ctx.lineTo(centerX - arrowWidth / 2, margin + arrowLength)
+  ctx.lineTo(centerX + arrowWidth / 2, margin + arrowLength)
+  ctx.closePath()
+  ctx.fill()
 
   // Label the axes
   ctx.textAlign = 'center'
@@ -77,8 +95,8 @@ function drawGrid(ctx: CanvasRenderingContext2D, width: number, height: number) 
       if (gridSize.value > 20 && i % 5 !== 0) {
         continue
       }
-      ctx.fillText(i.toString(), width / 2 + i * step, height / 2 + step)
-      ctx.fillText(i.toString(), width / 2 - step, height / 2 - i * step)
+      ctx.fillText(i.toString(), centerX + i * step, centerY + step)
+      ctx.fillText(i.toString(), centerX - step, centerY - i * step)
     }
   }
 }
@@ -125,7 +143,7 @@ watch(getZoom, (newRotate: number) => {
 })
 
 watch(getIsDrawing, (newVal: boolean) => {
-  if(!newVal) return
+  if (!newVal) return
   startAnimation()
 })
 
@@ -133,7 +151,7 @@ function startAnimation() {
   currentFrame = 0
   rotate = getRotate()
   zoom = getZoom()
-  const center = getRectangle().getCenter();
+  const center = getRectangle().getCenter()
   x = getX() - center[0]
   y = getY() - center[1]
   console.log(x, y)
@@ -144,8 +162,8 @@ function animate() {
   if (currentFrame < totalFrames) {
     const incrementalRotation = rotate / totalFrames
     const incrementalScale = Math.pow(zoom, 1 / totalFrames)
-    const incrementalX = (x) / totalFrames
-    const incrementalY = (y) / totalFrames
+    const incrementalX = x / totalFrames
+    const incrementalY = y / totalFrames
 
     getRectangle().scaleRotateAndMove(
       incrementalScale,
@@ -203,7 +221,7 @@ watch(getIsNeedToSave, () => {
 <template>
   <div class="image-container">
     <canvas ref="canvas" width="600" height="600"></canvas>
-    <input type="range" v-model="gridSize" min="2" max="100" step="1" />
+    <input type="range" class="slider" v-model="gridSize" min="2" max="100" step="1" />
   </div>
 </template>
 
@@ -217,9 +235,18 @@ canvas {
 .image-container {
   display: flex;
   flex-direction: column;
+  gap: 1rem;
   align-items: center;
   justify-content: center;
   height: 100%;
   width: 55%;
+}
+.slider {
+  appearance: none;
+  width: 75%;
+  height: 0.5rem;
+  border-radius: 0.313rem;
+  background: #565653cd;
+  outline: none;
 }
 </style>
