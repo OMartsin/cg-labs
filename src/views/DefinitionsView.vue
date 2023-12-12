@@ -115,8 +115,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 2rem;
-    overflow: scroll;
+    margin-bottom: 1.5rem;
 }
 
 .main-content-form{
@@ -146,7 +145,7 @@
 .whole-information-section {
     background-color: rgba(0, 255, 255, 0);
     overflow: scroll;
-    height: 35rem;
+    height: 33rem;
 }
 
 
