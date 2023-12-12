@@ -3,6 +3,11 @@ import { useColorsInfoStore } from '@/stores/colorsinfo'
 import { type CMYKPoint, type HSLPoint } from '@/types'
 import { ref, watch } from 'vue'
 
+const { setHslHintVisibility, setCmykHintVisibility } = defineProps<{
+  setHslHintVisibility: (newVal: boolean) => void
+  setCmykHintVisibility: (newVal: boolean) => void
+}>()
+
 const colorsinfo = useColorsInfoStore()
 
 const saturationRef = ref(50)
@@ -59,7 +64,10 @@ watch(
 <template>
   <div class="image-interaction-section">
     <div class="hsl-settings-form">
-      <h3>HSL</h3>
+      <div class="title-with-hint">
+        <h3>HSL</h3>
+        <button class="button" @click="setHslHintVisibility(true)"><i class="gg-info"></i></button>
+      </div>
       <div class="slider-container">
         <div class="slider-container-data">
           <a>Hue</a>
@@ -104,7 +112,10 @@ watch(
     </div>
 
     <div class="cmyk-settings-form">
-      <h3>CMYK</h3>
+      <div class="title-with-hint">
+        <h3>CMYK</h3>
+        <button class="button" @click="setCmykHintVisibility(true)"><i class="gg-info"></i></button>
+      </div>
       <div class="slider-container">
         <div class="slider-container-data">
           <a>Cayn</a>
@@ -222,6 +233,14 @@ watch(
   padding-bottom: 1rem;
 }
 
+.title-with-hint{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+}
+
 .cmyk-settings-form {
   display: flex;
   flex-direction: column;
@@ -306,5 +325,12 @@ watch(
   padding: 0.313rem;
   border-radius: 0.313rem;
   color: white;
+}
+
+.button{
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
 }
 </style>

@@ -287,7 +287,7 @@ function saveImage() {
   flex-direction: column;
   align-items: center;
   height: 100%;
-  width: 40%;
+  width: 50%;
   background-color: rgba(123, 180, 57, 0);
 }
 
@@ -453,4 +453,3 @@ function saveImage() {
   justify-content: space-between;
 }
 </style>
-@/stores/parallelogram

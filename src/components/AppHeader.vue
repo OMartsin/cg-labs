@@ -1,22 +1,5 @@
-<template>
-  <header class="header-item">
-    <div class="header-item-content-div">
-      <button class="header-button" id="home-button"><i class="fa-solid fa-house"></i>Home</button>
-      <button class="header-button" @click="toggleDropdown" id="activity-button">
-        <i class="fa-solid fa-bars"></i>Activity
-      </button>
-      <button class="header-button" id="contact-us-button">
-        <i class="fa-solid fa-phone-volume"></i>Contact us
-      </button>
-      <ActivityDropdown 
-        :show="dropdown" 
-        :setShowValue="setShowValue"
-      v-if="dropdown" />
-    </div>
-  </header>
-</template>
-
 <script setup lang="ts">
+import router from '@/router';
 import ActivityDropdown from './ActivityDropdown.vue'
 import { ref } from 'vue'
 const dropdown = ref(false)
@@ -31,14 +14,28 @@ function setShowValue(val: boolean) {
 }
 </script>
 
+<template>
+  <header class="header-item">
+    <div class="header-item-content-div">
+      <router-link to="/" class="header-button" id="home-button"><i class="fa-solid fa-house"></i>Home</router-link>
+      <button class="header-button" @click="toggleDropdown" id="activity-button">
+        <i class="fa-solid fa-bars"></i>Activity
+      </button>
+      <button class="header-button" id="contact-us-button">
+        <i class="fa-solid fa-phone-volume"></i>Contact us
+      </button>
+      <ActivityDropdown 
+        :show="dropdown" 
+        :setShowValue="setShowValue"
+      v-if="dropdown" />
+    </div>
+  </header>
+</template>
+
 <style scoped>
 .header-item {
   display: flex;
   justify-content: end;
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: 0;
   padding: 0.75rem;
   padding-left: 1rem;
   padding-right: 2rem;
@@ -59,6 +56,7 @@ function setShowValue(val: boolean) {
   height: 2.25rem;
   padding-left: 0.75rem;
   padding-right: 0.75rem;
+  text-decoration: none ;
 }
 
 button {

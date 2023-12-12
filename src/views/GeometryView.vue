@@ -37,14 +37,11 @@ geometryStore.setRectangle(new Parallelogram(vertices));
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 88vh;
 }
 .main-content-form {
-  margin-top: var(--header-height);
   display: flex;
   flex-direction: column;
   width: 90%;
-  height: 92%;
   background-color: rgba(54, 63, 70, 0);
 }
 .main-form-top-text{
@@ -62,9 +59,7 @@ geometryStore.setRectangle(new Parallelogram(vertices));
 .main-form-shapetransform-content {
   display: flex;
   justify-content: space-between;
-  height: 100%;
   width: 100%;
   background-color: rgba(26, 100, 123, 0);
 }
 </style>
-@/stores/parallelogram

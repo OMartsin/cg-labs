@@ -220,7 +220,7 @@ watch(getIsNeedToSave, () => {
 
 <template>
   <div class="image-container">
-    <canvas ref="canvas" width="600" height="600"></canvas>
+    <canvas ref="canvas" width="500" height="500"></canvas>
     <input type="range" class="slider" v-model="gridSize" min="2" max="100" step="1" />
   </div>
 </template>
