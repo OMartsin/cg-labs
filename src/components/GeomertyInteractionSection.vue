@@ -217,7 +217,7 @@ function saveImage() {
         </div>
       </div>
 
-      <button class="draw-button" id="draw-button" @click="updatePoints">Draw rectangle</button>
+      <button class="draw-button" id="draw-button" @click="updatePoints">Draw paralelogram</button>
 
       <div class="slider-container">
         <div class="slider-container-data">

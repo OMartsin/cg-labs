@@ -221,7 +221,12 @@ watch(getIsNeedToSave, () => {
 <template>
   <div class="image-container">
     <canvas ref="canvas" width="500" height="500"></canvas>
-    <input type="range" class="slider" v-model="gridSize" min="2" max="100" step="1" />
+    <div class="slider-container">
+        <div class="slider-container-data">
+          <a>Zoom</a>
+        </div>
+        <input type="range" class="slider" v-model="gridSize" min="2" max="100" step="1" />
+      </div>
   </div>
 </template>
 
@@ -249,5 +254,13 @@ canvas {
   background: #565653cd;
   outline: none;
 }
+
+
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10rem;
+  width: 35rem;
+}
+
 </style>
-@/stores/parallelogram
