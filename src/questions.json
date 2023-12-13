@@ -1,207 +1,206 @@
 [
-    {
-      "title": "The term 'dpi' characterizes...",
-      "options": [
-        { "label": "raster size", "value": "a" },
-        { "label": "distance between pixels, raster quality", "value": "b" },
-        { "label": "pixel shape, raster color depth", "value": "d" },
-        { "label": "distance between pixels", "value": "e" }
-      ],
-      "correctAnswers": ["b"]
-    },
-    {
-      "title": "A pixel is...",
-      "options": [
-        { "label": "color palette index", "value": "a" },
-        { "label": "set of vectors", "value": "b" },
-        { "label": "raster element", "value": "c" }
-      ],
-      "correctAnswers": ["c"]
-    },
-    {
-      "title": "Fractals are characterized by...",
-      "options": [
-        { "label": "self-similarity", "value": "a" },
-        { "label": "discreteness", "value": "b" },
-        { "label": "monochromatic nature", "value": "c" }
-      ],
-      "correctAnswers": ["a"]
-    },
-    {
-      "title": "Recursiveness is inherent in...",
-      "options": [
-        { "label": "fractal images", "value": "a" },
-        { "label": "vector images", "value": "b" },
-        { "label": "dot images", "value": "c" }
-      ],
-      "correctAnswers": ["a"]
-    },
-    {
-      "title": "The device that controls the monitor's operation is called...",
-      "options": [
-        { "label": "video card", "value": "a" },
-        { "label": "RAM", "value": "b" },
-        { "label": "processor", "value": "c" }
-      ],
-      "correctAnswers": ["a"]
-    },
-    {
-      "title": "Who is considered the founder of CG, who first created a specialized computer graphics package?",
-      "options": [
-        { "label": "Bézier", "value": "a" },
-        { "label": "de Casteljau", "value": "b" },
-        { "label": "Sutherland", "value": "c" }
-      ],
-      "correctAnswers": ["c"]
-    },
-    {
-      "title": "During which type of graphics does a computer generate and display images on a graphic device under the control of application programs?",
-      "options": [
-        { "label": "passive", "value": "a" },
-        { "label": "interactive", "value": "b" },
-        { "label": "active", "value": "c" }
-      ],
-      "correctAnswers": ["a"]
-    },
-    {
-      "title": "Which formats do BMP, GIF, JPEG belong to?",
-      "options": [
-        { "label": "metafiles", "value": "a" },
-        { "label": "raster", "value": "b" },
-        { "label": "vector", "value": "c" }
-      ],
-      "correctAnswers": ["b"]
-    },
-    {
-      "title": "Scalability of geometric characteristics is a property of...",
-      "options": [
-        { "label": "matrix graphics", "value": "a" },
-        { "label": "raster graphics", "value": "b" },
-        { "label": "vector graphics", "value": "c" }
-      ],
-      "correctAnswers": ["c"]
-    },
-    {
-      "title": "Raster formats include:",
-      "options": [
-        { "label": "PSD, DIC", "value": "a" },
-        { "label": "DIC, AI", "value": "b" },
-        { "label": "AI", "value": "c" },
-        { "label": "CDR", "value": "d" },
-        { "label": "PSD", "value": "e" }
-      ],
-      "correctAnswers": ["a"]
-    },
-    {
-      "title": "Vector formats include:",
-      "options": [
-        { "label": "AI", "value": "a" },
-        { "label": "CDR", "value": "b" },
-        { "label": "CDR, AI", "value": "c" },
-        { "label": "DIC", "value": "d" }
-      ],
-      "correctAnswers": ["c"]
-    },
-    {
-      "title": "What is the use of the median cut algorithm in computer graphics?",
-      "options": [
-        { "label": "increasing color brightness", "value": "a" },
-        { "label": "color palette optimization", "value": "b" },
-        { "label": "increasing raster image resolution", "value": "c" },
-        { "label": "transition between different coordinate systems", "value": "d" },
-        { "label": "reducing computational resource costs", "value": "e" }
-      ],
-      "correctAnswers": ["b", "e"]
-    },
-    {
-      "title": "Which model of image description is characterized by discreteness?",
-      "options": [
-        { "label": "fractal", "value": "a" },
-        { "label": "vector", "value": "b" },
-        { "label": "raster", "value": "c" }
-      ],
-      "correctAnswers": ["c"]
-    },
-      {
-        "title": "Why was a fourth component K added to the three-component CMY model?",
-        "options": [
-          { "label": "introducing another color for practical purposes", "value": "a" },
-          { "label": "increasing color brightness", "value": "b" },
-          { "label": "color palette optimization", "value": "c" }
-        ],
-        "correctAnswers": ["a"]
-      },
-      {
-        "title": "What is the use of the HSV color model?",
-        "options": [
-          { "label": "in adjusting color attributes", "value": "a" },
-          { "label": "for creating an optimized color palette", "value": "b" },
-          { "label": "for transitioning between subtractive and additive models", "value": "c" }
-        ],
-        "correctAnswers": ["a"]
-      },
-      {
-        "title": "How is yellow color defined in the HSV system?",
-        "options": [
-          { "label": "(30º, 1, 1)", "value": "a" },
-          { "label": "(60º, 1, 0)", "value": "b" },
-          { "label": "(60º, 1, 1)", "value": "c" }
-        ],
-        "correctAnswers": ["c"]
-      },
-      {
-        "title": "What is a color palette used for?",
-        "options": [
-          { "label": "compact storage of images", "value": "a" },
-          { "label": "increasing color brightness", "value": "b" },
-          { "label": "color interpolation", "value": "c" }
-        ],
-        "correctAnswers": ["a"]
-      },
-      {
-        "title": "In a generated color palette, access to color is achieved by:",
-        "options": [
-          { "label": "a set of three primary colors", "value": "a" },
-          { "label": "a pair of indices", "value": "b" },
-          { "label": "an index", "value": "c" }
-        ],
-        "correctAnswers": ["c"]
-      },
-      {
-        "title": "Which color model is additive?",
-        "options": [
-          { "label": "HSV", "value": "a" },
-          { "label": "CMYK", "value": "b" },
-          { "label": "RGB", "value": "c" }
-        ],
-        "correctAnswers": ["c"]
-      },
-      {
-        "title": "A voxel is analogous to...",
-        "options": [
-          { "label": "a raster", "value": "a" },
-          { "label": "a polygon", "value": "b" },
-          { "label": "a fractal", "value": "c" }
-        ],
-        "correctAnswers": ["a"]
-      },
-      {
-        "title": "For what purpose is the Bézier curve used?",
-        "options": [
-          { "label": "image optimization", "value": "a" },
-          { "label": "image approximation", "value": "b" },
-          { "label": "image interpolation", "value": "c" }
-        ],
-        "correctAnswers": ["b"]
-      },
-      {
-        "title": "How many points are needed to construct a Bézier curve of degree 4?",
-        "options": [
-          { "label": "5", "value": "a" },
-          { "label": "3", "value": "b" },
-          { "label": "3", "value": "c" }
-        ],
-        "correctAnswers": ["a"]
-      }
-  ]
-  
+  {
+    "title": "The term 'dpi' characterizes...",
+    "options": [
+      { "label": "raster size", "value": "a" },
+      { "label": "distance between pixels, raster quality", "value": "b" },
+      { "label": "pixel shape, raster color depth", "value": "d" },
+      { "label": "distance between pixels", "value": "e" }
+    ],
+    "correctAnswers": ["b"]
+  },
+  {
+    "title": "A pixel is...",
+    "options": [
+      { "label": "color palette index", "value": "a" },
+      { "label": "set of vectors", "value": "b" },
+      { "label": "raster element", "value": "c" }
+    ],
+    "correctAnswers": ["c"]
+  },
+  {
+    "title": "Fractals are characterized by...",
+    "options": [
+      { "label": "self-similarity", "value": "a" },
+      { "label": "discreteness", "value": "b" },
+      { "label": "monochromatic nature", "value": "c" }
+    ],
+    "correctAnswers": ["a"]
+  },
+  {
+    "title": "Recursiveness is inherent in...",
+    "options": [
+      { "label": "fractal images", "value": "a" },
+      { "label": "vector images", "value": "b" },
+      { "label": "dot images", "value": "c" }
+    ],
+    "correctAnswers": ["a"]
+  },
+  {
+    "title": "The device that controls the monitor's operation is called...",
+    "options": [
+      { "label": "video card", "value": "a" },
+      { "label": "RAM", "value": "b" },
+      { "label": "processor", "value": "c" }
+    ],
+    "correctAnswers": ["a"]
+  },
+  {
+    "title": "Who is considered the founder of CG, who first created a specialized computer graphics package?",
+    "options": [
+      { "label": "Bézier", "value": "a" },
+      { "label": "de Casteljau", "value": "b" },
+      { "label": "Sutherland", "value": "c" }
+    ],
+    "correctAnswers": ["c"]
+  },
+  {
+    "title": "During which type of graphics does a computer generate and display images on a graphic device under the control of application programs?",
+    "options": [
+      { "label": "passive", "value": "a" },
+      { "label": "interactive", "value": "b" },
+      { "label": "active", "value": "c" }
+    ],
+    "correctAnswers": ["a"]
+  },
+  {
+    "title": "Which formats do BMP, GIF, JPEG belong to?",
+    "options": [
+      { "label": "metafiles", "value": "a" },
+      { "label": "raster", "value": "b" },
+      { "label": "vector", "value": "c" }
+    ],
+    "correctAnswers": ["b"]
+  },
+  {
+    "title": "Scalability of geometric characteristics is a property of...",
+    "options": [
+      { "label": "matrix graphics", "value": "a" },
+      { "label": "raster graphics", "value": "b" },
+      { "label": "vector graphics", "value": "c" }
+    ],
+    "correctAnswers": ["c"]
+  },
+  {
+    "title": "Raster formats include:",
+    "options": [
+      { "label": "PSD, DIC", "value": "a" },
+      { "label": "DIC, AI", "value": "b" },
+      { "label": "AI", "value": "c" },
+      { "label": "CDR", "value": "d" },
+      { "label": "PSD", "value": "e" }
+    ],
+    "correctAnswers": ["a"]
+  },
+  {
+    "title": "Vector formats include:",
+    "options": [
+      { "label": "AI", "value": "a" },
+      { "label": "CDR", "value": "b" },
+      { "label": "CDR, AI", "value": "c" },
+      { "label": "DIC", "value": "d" }
+    ],
+    "correctAnswers": ["c"]
+  },
+  {
+    "title": "What is the use of the median cut algorithm in computer graphics?",
+    "options": [
+      { "label": "increasing color brightness", "value": "a" },
+      { "label": "color palette optimization", "value": "b" },
+      { "label": "increasing raster image resolution", "value": "c" },
+      { "label": "transition between different coordinate systems", "value": "d" },
+      { "label": "reducing computational resource costs", "value": "e" }
+    ],
+    "correctAnswers": ["b", "e"]
+  },
+  {
+    "title": "Which model of image description is characterized by discreteness?",
+    "options": [
+      { "label": "fractal", "value": "a" },
+      { "label": "vector", "value": "b" },
+      { "label": "raster", "value": "c" }
+    ],
+    "correctAnswers": ["c"]
+  },
+  {
+    "title": "Why was a fourth component K added to the three-component CMY model?",
+    "options": [
+      { "label": "introducing another color for practical purposes", "value": "a" },
+      { "label": "increasing color brightness", "value": "b" },
+      { "label": "color palette optimization", "value": "c" }
+    ],
+    "correctAnswers": ["a"]
+  },
+  {
+    "title": "What is the use of the HSV color model?",
+    "options": [
+      { "label": "in adjusting color attributes", "value": "a" },
+      { "label": "for creating an optimized color palette", "value": "b" },
+      { "label": "for transitioning between subtractive and additive models", "value": "c" }
+    ],
+    "correctAnswers": ["a"]
+  },
+  {
+    "title": "How is yellow color defined in the HSV system?",
+    "options": [
+      { "label": "(30º, 1, 1)", "value": "a" },
+      { "label": "(60º, 1, 0)", "value": "b" },
+      { "label": "(60º, 1, 1)", "value": "c" }
+    ],
+    "correctAnswers": ["c"]
+  },
+  {
+    "title": "What is a color palette used for?",
+    "options": [
+      { "label": "compact storage of images", "value": "a" },
+      { "label": "increasing color brightness", "value": "b" },
+      { "label": "color interpolation", "value": "c" }
+    ],
+    "correctAnswers": ["a"]
+  },
+  {
+    "title": "In a generated color palette, access to color is achieved by:",
+    "options": [
+      { "label": "a set of three primary colors", "value": "a" },
+      { "label": "a pair of indices", "value": "b" },
+      { "label": "an index", "value": "c" }
+    ],
+    "correctAnswers": ["c"]
+  },
+  {
+    "title": "Which color model is additive?",
+    "options": [
+      { "label": "HSV", "value": "a" },
+      { "label": "CMYK", "value": "b" },
+      { "label": "RGB", "value": "c" }
+    ],
+    "correctAnswers": ["c"]
+  },
+  {
+    "title": "A voxel is analogous to...",
+    "options": [
+      { "label": "a raster", "value": "a" },
+      { "label": "a polygon", "value": "b" },
+      { "label": "a fractal", "value": "c" }
+    ],
+    "correctAnswers": ["a"]
+  },
+  {
+    "title": "For what purpose is the Bézier curve used?",
+    "options": [
+      { "label": "image optimization", "value": "a" },
+      { "label": "image approximation", "value": "b" },
+      { "label": "image interpolation", "value": "c" }
+    ],
+    "correctAnswers": ["b"]
+  },
+  {
+    "title": "How many points are needed to construct a Bézier curve of degree 4?",
+    "options": [
+      { "label": "5", "value": "a" },
+      { "label": "3", "value": "b" },
+      { "label": "3", "value": "c" }
+    ],
+    "correctAnswers": ["a"]
+  }
+]
