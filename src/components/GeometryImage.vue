@@ -1,21 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
-import { Parallelogram } from '@/geometry'
-import { useRectangleInfoStore } from '@/stores/parallelogram'
+import { IsocelesTriangle } from '@/geometry'
+import { useTriangleInfoStore } from '@/stores/triangle'
 
 const canvas = ref<HTMLCanvasElement | null>(null)
-const {
-  getParalelogram,
-  getSaveParalelogram,
-  getIsDrawing,
-  getRotate,
-  getZoom,
-  setIsDrawing,
-  getIsNeedToSave,
-  setIsNeedToSave,
-  getX,
-  getY
-} = useRectangleInfoStore()
+const { getTriangle, getSaveTriangle, getIsNeedToSave, setIsNeedToSave } = useTriangleInfoStore()
 
 const gridSize = ref<number>(15)
 const margin = 0
@@ -27,7 +16,7 @@ function gridToCanvas(x: number, y: number) {
   return [canvasX, canvasY]
 }
 
-function drawRectangle(rectangle: Parallelogram, ctx: CanvasRenderingContext2D) {
+function drawTriangle(rectangle: IsocelesTriangle, ctx: CanvasRenderingContext2D) {
   const vertices = rectangle.vertices.map((v) => gridToCanvas(v[0], v[1]))
   ctx.beginPath()
   ctx.moveTo(vertices[0][0], vertices[0][1])
@@ -106,81 +95,26 @@ onMounted(() => {
     const ctx = canvas.value.getContext('2d')
     if (ctx) {
       drawGrid(ctx, canvas.value.width, canvas.value.height)
-      console.log(getParalelogram())
-      drawRectangle(getParalelogram(), ctx)
+      drawTriangle(getTriangle(), ctx)
     }
   }
 })
 
 watch(
-  getParalelogram,
-  (newRectangle: Parallelogram) => {
+  getTriangle,
+  (newRectangle: IsocelesTriangle) => {
     if (canvas.value) {
       const ctx = canvas.value.getContext('2d')
       if (ctx) {
+        console.log(newRectangle.getCenter())
         ctx.clearRect(0, 0, canvas.value.width, canvas.value.height) // Clear the canvas
         drawGrid(ctx, canvas.value.width, canvas.value.height) // Redraw the grid
-        drawRectangle(newRectangle, ctx) // Redraw the rectangle
+        drawTriangle(newRectangle, ctx) // Redraw the rectangle
       }
     }
   },
   { deep: true }
 )
-
-const totalFrames = 200
-let currentFrame = 0
-let rotate = getRotate()
-let zoom = getZoom()
-let x = getX()
-let y = getY()
-
-watch(getRotate, (newRotate: number) => {
-  startAnimation()
-})
-
-watch(getZoom, (newRotate: number) => {
-  startAnimation()
-})
-
-watch(getIsDrawing, (newVal: boolean) => {
-  if (!newVal) return
-  startAnimation()
-})
-
-function startAnimation() {
-  currentFrame = 0
-  rotate = getRotate()
-  zoom = getZoom()
-  const center = getParalelogram().getCenter()
-  x = getX() - center[0]
-  y = getY() - center[1]
-  console.log(x, y)
-  animate()
-}
-
-function animate() {
-  if (currentFrame < totalFrames) {
-    const incrementalRotation = rotate / totalFrames
-    const incrementalScale = Math.pow(zoom, 1 / totalFrames)
-    const incrementalX = x / totalFrames
-    const incrementalY = y / totalFrames
-
-    getParalelogram().scaleRotateAndMove(
-      incrementalScale,
-      incrementalScale,
-      incrementalRotation,
-      incrementalX,
-      incrementalY
-    )
-
-    if (canvas.value) {
-      currentFrame++
-      requestAnimationFrame(animate)
-    }
-  } else {
-    setIsDrawing(false)
-  }
-}
 
 watch(gridSize, () => {
   if (canvas.value) {
@@ -188,7 +122,7 @@ watch(gridSize, () => {
     if (ctx) {
       ctx.clearRect(0, 0, canvas.value.width, canvas.value.height)
       drawGrid(ctx, canvas.value.width, canvas.value.height)
-      drawRectangle(getParalelogram(), ctx)
+      drawTriangle(getTriangle(), ctx)
     }
   }
 })
@@ -196,12 +130,12 @@ watch(gridSize, () => {
 watch(getIsNeedToSave, () => {
   setIsNeedToSave(false)
   if (!canvas.value) return
-  console.log(getSaveParalelogram())
+  console.log(getSaveTriangle())
   const ctx = canvas.value.getContext('2d')
   if (ctx) {
     ctx.clearRect(0, 0, canvas.value.width, canvas.value.height)
     drawGrid(ctx, canvas.value.width, canvas.value.height)
-    drawRectangle(getSaveParalelogram(), ctx)
+    drawTriangle(getSaveTriangle(), ctx)
   }
 
   const dataURL = canvas.value.toDataURL()
@@ -213,7 +147,7 @@ watch(getIsNeedToSave, () => {
   if (ctx) {
     ctx.clearRect(0, 0, canvas.value.width, canvas.value.height)
     drawGrid(ctx, canvas.value.width, canvas.value.height)
-    drawRectangle(getParalelogram(), ctx)
+    drawTriangle(getTriangle(), ctx)
   }
 })
 </script>
@@ -222,11 +156,11 @@ watch(getIsNeedToSave, () => {
   <div class="image-container">
     <canvas ref="canvas" width="500" height="500"></canvas>
     <div class="slider-container">
-        <div class="slider-container-data">
-          <a>Zoom</a>
-        </div>
-        <input type="range" class="slider" v-model="gridSize" min="2" max="100" step="1" />
+      <div class="slider-container-data">
+        <a>Zoom</a>
       </div>
+      <input type="range" class="slider" v-model="gridSize" min="2" max="100" step="1" />
+    </div>
   </div>
 </template>
 
@@ -255,12 +189,10 @@ canvas {
   outline: none;
 }
 
-
 .slider-container {
   display: flex;
   flex-direction: column;
   margin-left: 10rem;
   width: 35rem;
 }
-
 </style>

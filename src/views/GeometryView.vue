@@ -1,19 +1,6 @@
 <script setup lang="ts">
 import GeometryInteractionSection from '@/components/GeomertyInteractionSection.vue'
 import GeometryImage from '@/components/GeometryImage.vue'
-import { Parallelogram, type Matrix } from '@/geometry';
-import { useRectangleInfoStore } from '@/stores/parallelogram';
-
-const geometryStore = useRectangleInfoStore();
-
-const vertices: Matrix = [
-    [1, 1, 1],
-    [1, 3, 1],
-    [3, 3, 1],
-    [3, 1, 1],
-];
-
-geometryStore.setRectangle(new Parallelogram(vertices));
 
 </script>
 

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Parallelogram, type Matrix } from '@/geometry'
-import { useRectangleInfoStore } from '@/stores/parallelogram'
+import { IsocelesTriangle, type Matrix } from '@/geometry'
+import { useTriangleInfoStore } from '@/stores/triangle';
 import { toast } from 'vue3-toastify'
 
-const store = useRectangleInfoStore()
+const store = useTriangleInfoStore()
 
 const vertices = ref<Matrix>([
   [0, 0, 1],
@@ -13,223 +13,120 @@ const vertices = ref<Matrix>([
   [0, 0, 1]
 ])
 
-vertices.value = store.getParalelogram().vertices.map((innerArray) => [...innerArray])
-const rotation = ref(0)
+const baseA = ref([2, 3 ,1])
+const baseB = ref([5, 4, 1])
+const height = ref(3)
+
+vertices.value = store.getTriangle().vertices.map((innerArray) => [...innerArray])
 const zoom = ref(1)
-const xMoveVal = ref(0)
-const yMoveVal = ref(0)
-const zoomChecked = ref(false)
-const rotateChecked = ref(false)
-const moveChecked = ref(false)
-
-const updatePoints = () => {
-  const A = [+vertices.value[0][0], +vertices.value[0][1], 1]
-  const B = [+vertices.value[1][0], +vertices.value[1][1], 1]
-  const C = [+vertices.value[2][0], +vertices.value[2][1], 1]
-  const D = calculateFourthPoint([A, B, C])
-  vertices.value = [A, B, C, D]
-  if (isParallelogram(vertices.value) === false) {
-    toast.error('Please enter another coordinates', {
-      position: toast.POSITION.BOTTOM_RIGHT
-    })
-    return
-  }
-  store.setRectangle(new Parallelogram(vertices.value))
-  vertices.value = store.getParalelogram().vertices.map((innerArray) => [...innerArray])
-}
-
-const isParallelogram = (vertices: Matrix) => {
-  const A = vertices[0]
-  const B = vertices[1]
-  const C = vertices[2]
-  const D = vertices[3]
-
-  const AB = [B[0] - A[0], B[1] - A[1]]
-  const BC = [C[0] - B[0], C[1] - B[1]]
-  const CD = [D[0] - C[0], D[1] - C[1]]
-  const DA = [A[0] - D[0], A[1] - D[1]]
-
-  const sidesEqual = (vec1: number[], vec2: number[]) =>
-    Math.sqrt(vec1[0] ** 2 + vec1[1] ** 2) === Math.sqrt(vec2[0] ** 2 + vec2[1] ** 2)
-  if (!sidesEqual(AB, CD) || !sidesEqual(BC, DA)) {
-    return false
-  }
-
-  const areParallel = (vec1: number[], vec2: number[]) =>
-    vec1[0] * vec2[1] - vec1[1] * vec2[0] === 0
-  if (!areParallel(AB, CD) || !areParallel(BC, DA)) {
-    return false
-  }
-
-  const angleBetweenLines = (vec1: number[], vec2: number[]) => {
-    const dotProduct = vec1[0] * vec2[0] + vec1[1] * vec2[1]
-    const magnitudeProduct =
-      Math.sqrt(vec1[0] ** 2 + vec1[1] ** 2) * Math.sqrt(vec2[0] ** 2 + vec2[1] ** 2)
-    const cosTheta = dotProduct / magnitudeProduct
-    return Math.acos(cosTheta) * (180 / Math.PI)
-  }
-
-  const angle1 = angleBetweenLines(AB, BC)
-  const angle2 = angleBetweenLines(BC, CD)
-  const angle3 = angleBetweenLines(CD, DA)
-  const angle4 = angleBetweenLines(DA, AB)
-  console.log(angle1, angle2, angle3, angle4)
-
-  if (
-    (angle1 > 179 && angle1 < 181) ||
-    (angle2 > 179 && angle2 < 181) ||
-    (angle3 > 179 && angle3 < 181) ||
-    (angle4 > 179 && angle4 < 181) || 
-    Number.isNaN(angle1) || Number.isNaN(angle2) || Number.isNaN(angle3) || Number.isNaN(angle4) ) {
-    return false
-  }
-
-  return true
-}
 
 function startTrasnformation() {
-  if (store.getIsDrawing() === false) {
-    store.setIsDrawing(true)
-    const center = store.getParalelogram().getCenter()
-    store.setRotate(rotateChecked.value ? rotation.value : 0)
-    store.setZoom(zoomChecked.value ? zoom.value : 1)
-    store.setX(moveChecked.value ? xMoveVal.value : center[0])
-    store.setY(moveChecked.value ? yMoveVal.value : center[1])
-  } else {
-    toast.error('Please wait until the previous movement ends', {
-      position: toast.POSITION.BOTTOM_RIGHT
-    })
-  }
-}
-
-function calculateFourthPoint(vertices: Matrix) {
-  const A = vertices[0]
-  const B = vertices[1]
-  const C = vertices[2]
-
-  console.log(A, B, C)
-
-  const D = [+A[0] + +C[0] - B[0], +A[1] + +C[1] - B[1], 1]
-  return D
+  store.getTriangle().scaleAndMirror(zoom.value,zoom.value);
 }
 
 function saveImage() {
   store.setIsNeedToSave(true)
+}
+
+const drawTriangle = () => {
+  if (height.value <= 0) {
+    alert('Please enter a valid height.')
+    return
+  }
+
+  // Обчислення координат вершини трикутника
+  const midpointBase = [
+    (baseA.value[0] + baseB.value[0]) / 2,
+    (baseA.value[1] + baseB.value[1]) / 2
+  ]
+  const direction = [baseB.value[0] - baseA.value[0], baseB.value[1] - baseA.value[1]]
+  const perpendicular = [-direction[1], direction[0]] // Перпендикуляр до основи
+  const length = Math.sqrt(perpendicular[0] ** 2 + perpendicular[1] ** 2)
+  const unitPerpendicular = [perpendicular[0] / length, perpendicular[1] / length]
+  const apex = [
+    midpointBase[0] + unitPerpendicular[0] * height.value,
+    midpointBase[1] + unitPerpendicular[1] * height.value
+  ]
+
+  console.log('Apex of Triangle:', apex)
+  apex.push(1)
+  const vertices = [baseA.value, baseB.value, apex]
+  console.log('Vertices of Triangle:', vertices)
+  store.setTriangle(new IsocelesTriangle(vertices))
+  baseA.value = store.getTriangle().vertices[0].map((value) => value);
+  baseB.value = store.getTriangle().vertices[1].map((value) => value);
 }
 </script>
 
 <template>
   <div class="shapetransform-interaction-section">
     <div class="shapetransform-settings-form">
-      <a class="shape-name">Parallelogram</a>
-      <div class="coordinates-pair-container">
-        <div class="coordinates-section">
-          <div>
-            <label for="x_value" class="coordinate-label">X:</label>
-            <input
-              type="number"
-              class="coordinate-input"
-              id="x_value"
-              v-model="vertices[0][0]"
-              placeholder="0"
-            />
-          </div>
-          <div>
-            <label for="y_value" class="coordinate-label">Y:</label>
-            <input
-              type="number"
-              class="coordinate-input"
-              id="y_value"
-              v-model="vertices[0][1]"
-              placeholder="0"
-            />
-          </div>
+      <a class="shape-name">Isosceles Triangle</a>
+
+      <div class="coordinates-section">
+        <div>
+          <label for="x_value_base_a" class="coordinate-label">Base A - X:</label>
+          <input
+            type="number"
+            class="coordinate-input"
+            id="x_value_base_a"
+            v-model="baseA[0]"
+            placeholder="0"
+          />
         </div>
-        <div class="coordinates-section">
-          <div>
-            <label for="x_value" class="coordinate-label">X:</label>
-            <input
-              type="number"
-              class="coordinate-input"
-              id="x_value"
-              v-model="vertices[1][0]"
-              placeholder="0"
-            />
-          </div>
-          <div>
-            <label for="y_value" class="coordinate-label">Y:</label>
-            <input
-              type="number"
-              class="coordinate-input"
-              id="y_value"
-              v-model="vertices[1][1]"
-              placeholder="0"
-            />
-          </div>
-        </div>
-      </div>
-      <div class="coordinates-pair-container">
-        <div class="coordinates-section">
-          <div>
-            <label for="x_value" class="coordinate-label">X:</label>
-            <input
-              type="number"
-              class="coordinate-input"
-              id="x_value"
-              v-model="vertices[2][0]"
-              placeholder="0"
-            />
-          </div>
-          <div>
-            <label for="y_value" class="coordinate-label">Y:</label>
-            <input
-              type="number"
-              class="coordinate-input"
-              id="y_value"
-              v-model="vertices[2][1]"
-              placeholder="0"
-            />
-          </div>
-        </div>
-        <div class="coordinates-section">
-          <div>
-            <label for="x_value" class="coordinate-label">X:</label>
-            <input
-              type="number"
-              class="coordinate-input readonly"
-              id="x_value"
-              v-model="vertices[3][0]"
-              placeholder="0"
-              readonly
-            />
-          </div>
-          <div>
-            <label for="y_value" class="coordinate-label">Y:</label>
-            <input
-              type="number"
-              class="coordinate-input readonly"
-              id="y_value"
-              v-model="vertices[3][1]"
-              placeholder="0"
-              readonly
-            />
-          </div>
+        <div>
+          <label for="y_value_base_a" class="coordinate-label">Base A - Y:</label>
+          <input
+            type="number"
+            class="coordinate-input"
+            id="y_value_base_a"
+            v-model="baseA[1]"
+            placeholder="0"
+          />
         </div>
       </div>
 
-      <button class="draw-button" id="draw-button" @click="updatePoints">Draw paralelogram</button>
+      <div class="coordinates-section">
+        <div>
+          <label for="x_value_base_b" class="coordinate-label">Base B - X:</label>
+          <input
+            type="number"
+            class="coordinate-input"
+            id="x_value_base_b"
+            v-model="baseB[0]"
+            placeholder="0"
+          />
+        </div>
+        <div>
+          <label for="y_value_base_b" class="coordinate-label">Base B - Y:</label>
+          <input
+            type="number"
+            class="coordinate-input"
+            id="y_value_base_b"
+            v-model="baseB[1]"
+            placeholder="0"
+          />
+        </div>
+      </div>
+
+      <div class="coordinates-section">
+        <div>
+          <label for="height_value" class="coordinate-label">Height:</label>
+          <input
+            type="number"
+            class="coordinate-input"
+            id="height_value"
+            v-model="height"
+            placeholder="0"
+          />
+        </div>
+      </div>
+
+      <button class="draw-button" id="draw-button" @click="drawTriangle">Draw Triangle</button>
 
       <div class="slider-container">
         <div class="slider-container-data">
-          <a><input type="checkbox" id="rotateCheckbox" v-model="rotateChecked" />Rotation</a>
-          <a>{{ rotation }}</a>
-        </div>
-        <input type="range" v-model="rotation" min="-90" max="90" class="slider" id="mySlider" />
-      </div>
-
-      <div class="slider-container">
-        <div class="slider-container-data">
-          <a><input type="checkbox" id="zoomCheckbox" v-model="zoomChecked" />Scale</a>
+          <a>Scale</a>
           <a>{{ zoom }}</a>
         </div>
         <input
@@ -241,35 +138,6 @@ function saveImage() {
           class="slider"
           id="mySlider"
         />
-      </div>
-      <div class="slider-container">
-        <div>
-          <input type="checkbox" id="moveCheckbox" v-model="moveChecked" /> Move rectangle by center
-          to
-        </div>
-        <div class="move-coordinates">
-          <div>
-            <label for="x_value" class="coordinate-label">X:</label>
-            <input
-              type="number"
-              class="coordinate-input"
-              id="x_value"
-              v-model="xMoveVal"
-              placeholder="0"
-            />
-          </div>
-
-          <div>
-            <label for="y_value" class="coordinate-label">Y:</label>
-            <input
-              type="number"
-              class="coordinate-input"
-              id="y_value"
-              v-model="yMoveVal"
-              placeholder="0"
-            />
-          </div>
-        </div>
       </div>
 
       <button class="start-button" id="start-button" @click="startTrasnformation">Start</button>
