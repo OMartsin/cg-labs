@@ -33,7 +33,7 @@ const checkAnswers = () => {
       .map((isSelected, optionIndex) => isSelected ? question.options[optionIndex].value : null)
       .filter(value => value !== null);
     selectedAnswers.value[index] = selectedOptions as string[];
-    const isCorrect = arraysEqual(selectedOptions, question.correctAnswers ?? []);
+    const isCorrect = arraysEqual(selectedOptions as string[], question.correctAnswers ?? []);
     answerResults.value.push({ questionIndex: index, isCorrect })
   })
   showResults.value = true
