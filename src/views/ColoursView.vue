@@ -3,11 +3,15 @@ import ImageInteractionSection from '@/components/ImageInteractionSection.vue'
 import HSLImageSection from '@/components/HSLImageSection.vue'
 import CMYKImageSection from '@/components/CMYKImageSection.vue'
 import type { CMYKPoint, FragmentBounds, HSLPoint, RGBPoint } from '@/types'
+import HslHint  from '@/components/HslHint.vue'
+import CmykHint  from '@/components/CmykHint.vue'
 import { ref } from 'vue'
 
 const firstTitle = ref('HSL')
 const secondTitle = ref('CMYK')
 const firstButtonText = ref('Upload image')
+const cmykHintVisible = ref(false)
+const hslHintVisible = ref(false)
 
 const range = 30 as number
 
@@ -58,16 +62,17 @@ function canvasRgbImageToHSLWithColorSaturation(
   const data: Uint8ClampedArray = imageData.data
 
   for (let i = 0; i < data.length; i += 4) {
-    const x = (i / 4) % canvas.width;
-    const y = Math.floor(i / (4 * canvas.width));
+    const x = (i / 4) % canvas.width
+    const y = Math.floor(i / (4 * canvas.width))
 
-    if (fragmentBounds && (
-      x < fragmentBounds.startX ||
-      x > fragmentBounds.endX ||
-      y < fragmentBounds.startY ||
-      y > fragmentBounds.endY
-    )) {
-      continue;
+    if (
+      fragmentBounds &&
+      (x < fragmentBounds.startX ||
+        x > fragmentBounds.endX ||
+        y < fragmentBounds.startY ||
+        y > fragmentBounds.endY)
+    ) {
+      continue
     }
     if (colorHue === null || colorSaturation === null) {
       continue
@@ -177,44 +182,56 @@ function cmykToRgb(cmyk: CMYKPoint): RGBPoint {
   }
 }
 
-// Example usage:
-const rgbPoint: RGBPoint = { red: 175, green: 208, blue: 218 } // Replace with your RGB values
-const hslPoint: HSLPoint = rgbToHsl(rgbPoint)
-console.log('HSL values:', hslPoint)
-const rgbPoint2: RGBPoint = HSLToRGB(hslPoint)
-console.log('RGB values:', rgbPoint2)
+function setHslHintVisible(newValue: boolean) {
+  hslHintVisible.value = newValue
+}
+
+function setCmykHintVisible(newValue: boolean)  {
+  cmykHintVisible.value = newValue
+}
 </script>
 
 <template>
-  <div class="main-item">
-    <div class="main-content-form">
-      <div class="main-form-top-text">
-        <h1>COLORS</h1>
-        <a class>Experiment with the color pallete</a>
-      </div>
-      <div class="colors-content">
-        <HSLImageSection
-          :title="firstTitle"
-          :canvasRedraw="canvasRgbImageToHSLWithColorSaturation"
-          :loadButtonText="firstButtonText"
-          :rgbToHsl="rgbToHsl"
-        ></HSLImageSection>
-        <ImageInteractionSection></ImageInteractionSection>
-        <CMYKImageSection
-          :title="secondTitle"
-          :rgbToCmyk="rgbToCmyk"
-          :canvasRedraw="canvasRgbImageToCMYK"
-          :loadButtonText="firstButtonText"
-        ></CMYKImageSection>
+  <div class="with-margin">
+    <HslHint v-if="hslHintVisible" 
+  :setHintVisibility="setHslHintVisible"/>
+  <div>
+    <CmykHint v-if="cmykHintVisible"
+    :setHintVisibility="setCmykHintVisible" />
+    <div class="main-item">
+      <div class="main-content-form">
+        <div class="main-form-top-text">
+          <h1>COLORS</h1>
+          <a class>Experiment with the color pallete</a>
+        </div>
+        <div class="colors-content">
+          <HSLImageSection
+            :title="firstTitle"
+            :canvasRedraw="canvasRgbImageToHSLWithColorSaturation"
+            :loadButtonText="firstButtonText"
+            :rgbToHsl="rgbToHsl"
+          ></HSLImageSection>
+          <ImageInteractionSection
+          :setHslHintVisibility="setHslHintVisible"
+          :setCmykHintVisibility="setCmykHintVisible"></ImageInteractionSection>
+          <CMYKImageSection
+            :title="secondTitle"
+            :rgbToCmyk="rgbToCmyk"
+            :canvasRedraw="canvasRgbImageToCMYK"
+            :loadButtonText="firstButtonText"
+          ></CMYKImageSection>
+        </div>
       </div>
     </div>
+  </div>
   </div>
 </template>
 
 <style scoped>
 /*__________set main form_________*/
+.with-margin {
+}
 .main-item {
-  margin-top: var(--header-height);
   display: flex;
   justify-content: center;
   align-items: center;

@@ -1,6 +1,6 @@
 export type Matrix = number[][];
 
-export class Rectangle {
+export class Parallelogram {
     verticesMatrix: Matrix;
 
     constructor(vertices: Matrix) {
@@ -21,7 +21,7 @@ export class Rectangle {
     }
 
     getCenter(): [number, number] {
-        const x = Math.abs(this.verticesMatrix[0][0] + this.verticesMatrix[2][0]) / 2;
+        const x = (this.verticesMatrix[0][0] + this.verticesMatrix[2][0]) / 2;
         const y = (this.verticesMatrix[0][1] + this.verticesMatrix[2][1]) / 2;
         return [x, y];
     }
@@ -61,11 +61,11 @@ export class Rectangle {
         this.applyTransformation(matrix);
     }
 
-    scaleRotateAndMove(sx: number, sy: number, angle: number, x:number, y: number): void {
+    scaleRotateAndMove(sx: number, sy: number, angle: number, x: number, y: number): void {
         const center = this.getCenter();
-        let matrix = this.getTranslateMatrix(-center[0], -center[1]);
+        let matrix = this.getTranslateMatrix(- center[0], - center[1]);
         matrix = matrixMultiply(matrix, this.getScaleMatrix(sx, sy));
-        matrix = matrixMultiply(matrix, this.getTranslateMatrix(x,y))
+        matrix = matrixMultiply(matrix, this.getTranslateMatrix(x, y));
         matrix = matrixMultiply(matrix, this.getRotateMatrix(angle));
         matrix = matrixMultiply(matrix, this.getTranslateMatrix(center[0], center[1]));
         this.applyTransformation(matrix);

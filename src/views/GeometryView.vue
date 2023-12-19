@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import GeometryInteractionSection from '@/components/GeomertyInteractionSection.vue'
 import GeometryImage from '@/components/GeometryImage.vue'
-import { ref } from 'vue'
-import { Rectangle, type Matrix } from '@/geometry';
-import { useRectangleInfoStore } from '@/stores/rectangle';
+import { Parallelogram, type Matrix } from '@/geometry';
+import { useRectangleInfoStore } from '@/stores/parallelogram';
 
 const geometryStore = useRectangleInfoStore();
 
@@ -14,7 +13,7 @@ const vertices: Matrix = [
     [3, 1, 1],
 ];
 
-geometryStore.setRectangle(new Rectangle(vertices));
+geometryStore.setRectangle(new Parallelogram(vertices));
 
 </script>
 
@@ -38,14 +37,11 @@ geometryStore.setRectangle(new Rectangle(vertices));
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 88vh;
 }
 .main-content-form {
-  margin-top: var(--header-height);
   display: flex;
   flex-direction: column;
   width: 90%;
-  height: 92%;
   background-color: rgba(54, 63, 70, 0);
 }
 .main-form-top-text{
@@ -63,7 +59,6 @@ geometryStore.setRectangle(new Rectangle(vertices));
 .main-form-shapetransform-content {
   display: flex;
   justify-content: space-between;
-  height: 100%;
   width: 100%;
   background-color: rgba(26, 100, 123, 0);
 }

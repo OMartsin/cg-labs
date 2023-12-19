@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
-import { Rectangle } from '@/geometry'
-import { useRectangleInfoStore } from '@/stores/rectangle'
+import { Parallelogram } from '@/geometry'
+import { useRectangleInfoStore } from '@/stores/parallelogram'
 
 const canvas = ref<HTMLCanvasElement | null>(null)
 const {
-  getRectangle,
-  getSaveRectangle,
+  getParalelogram,
+  getSaveParalelogram,
   getIsDrawing,
   getRotate,
   getZoom,
@@ -27,7 +27,7 @@ function gridToCanvas(x: number, y: number) {
   return [canvasX, canvasY]
 }
 
-function drawRectangle(rectangle: Rectangle, ctx: CanvasRenderingContext2D) {
+function drawRectangle(rectangle: Parallelogram, ctx: CanvasRenderingContext2D) {
   const vertices = rectangle.vertices.map((v) => gridToCanvas(v[0], v[1]))
   ctx.beginPath()
   ctx.moveTo(vertices[0][0], vertices[0][1])
@@ -60,11 +60,29 @@ function drawGrid(ctx: CanvasRenderingContext2D, width: number, height: number) 
   // Draw the axes
   ctx.beginPath()
   ctx.strokeStyle = 'black' // Black color for axes
-  ctx.moveTo(width / 2, margin)
-  ctx.lineTo(width / 2, effectiveHeight + margin)
-  ctx.moveTo(margin, height / 2)
-  ctx.lineTo(effectiveWidth + margin, height / 2)
+  const centerX = width / 2
+  const centerY = height / 2
+  ctx.moveTo(centerX, margin)
+  ctx.lineTo(centerX, effectiveHeight + margin)
+  ctx.moveTo(margin, centerY)
+  ctx.lineTo(effectiveWidth + margin, centerY)
   ctx.stroke()
+
+  // Arrowheads for axes
+  const arrowLength = 10
+  const arrowWidth = 10
+  ctx.beginPath()
+  ctx.moveTo(effectiveWidth + margin, centerY)
+  ctx.lineTo(effectiveWidth + margin - arrowLength, centerY - arrowWidth / 2)
+  ctx.lineTo(effectiveWidth + margin - arrowLength, centerY + arrowWidth / 2)
+  ctx.closePath()
+  ctx.fill()
+  ctx.beginPath()
+  ctx.moveTo(centerX, margin)
+  ctx.lineTo(centerX - arrowWidth / 2, margin + arrowLength)
+  ctx.lineTo(centerX + arrowWidth / 2, margin + arrowLength)
+  ctx.closePath()
+  ctx.fill()
 
   // Label the axes
   ctx.textAlign = 'center'
@@ -77,8 +95,8 @@ function drawGrid(ctx: CanvasRenderingContext2D, width: number, height: number) 
       if (gridSize.value > 20 && i % 5 !== 0) {
         continue
       }
-      ctx.fillText(i.toString(), width / 2 + i * step, height / 2 + step)
-      ctx.fillText(i.toString(), width / 2 - step, height / 2 - i * step)
+      ctx.fillText(i.toString(), centerX + i * step, centerY + step)
+      ctx.fillText(i.toString(), centerX - step, centerY - i * step)
     }
   }
 }
@@ -88,15 +106,15 @@ onMounted(() => {
     const ctx = canvas.value.getContext('2d')
     if (ctx) {
       drawGrid(ctx, canvas.value.width, canvas.value.height)
-      console.log(getRectangle())
-      drawRectangle(getRectangle(), ctx)
+      console.log(getParalelogram())
+      drawRectangle(getParalelogram(), ctx)
     }
   }
 })
 
 watch(
-  getRectangle,
-  (newRectangle: Rectangle) => {
+  getParalelogram,
+  (newRectangle: Parallelogram) => {
     if (canvas.value) {
       const ctx = canvas.value.getContext('2d')
       if (ctx) {
@@ -125,7 +143,7 @@ watch(getZoom, (newRotate: number) => {
 })
 
 watch(getIsDrawing, (newVal: boolean) => {
-  if(!newVal) return
+  if (!newVal) return
   startAnimation()
 })
 
@@ -133,7 +151,7 @@ function startAnimation() {
   currentFrame = 0
   rotate = getRotate()
   zoom = getZoom()
-  const center = getRectangle().getCenter();
+  const center = getParalelogram().getCenter()
   x = getX() - center[0]
   y = getY() - center[1]
   console.log(x, y)
@@ -144,10 +162,10 @@ function animate() {
   if (currentFrame < totalFrames) {
     const incrementalRotation = rotate / totalFrames
     const incrementalScale = Math.pow(zoom, 1 / totalFrames)
-    const incrementalX = (x) / totalFrames
-    const incrementalY = (y) / totalFrames
+    const incrementalX = x / totalFrames
+    const incrementalY = y / totalFrames
 
-    getRectangle().scaleRotateAndMove(
+    getParalelogram().scaleRotateAndMove(
       incrementalScale,
       incrementalScale,
       incrementalRotation,
@@ -170,7 +188,7 @@ watch(gridSize, () => {
     if (ctx) {
       ctx.clearRect(0, 0, canvas.value.width, canvas.value.height)
       drawGrid(ctx, canvas.value.width, canvas.value.height)
-      drawRectangle(getRectangle(), ctx)
+      drawRectangle(getParalelogram(), ctx)
     }
   }
 })
@@ -178,12 +196,12 @@ watch(gridSize, () => {
 watch(getIsNeedToSave, () => {
   setIsNeedToSave(false)
   if (!canvas.value) return
-  console.log(getSaveRectangle())
+  console.log(getSaveParalelogram())
   const ctx = canvas.value.getContext('2d')
   if (ctx) {
     ctx.clearRect(0, 0, canvas.value.width, canvas.value.height)
     drawGrid(ctx, canvas.value.width, canvas.value.height)
-    drawRectangle(getSaveRectangle(), ctx)
+    drawRectangle(getSaveParalelogram(), ctx)
   }
 
   const dataURL = canvas.value.toDataURL()
@@ -195,15 +213,20 @@ watch(getIsNeedToSave, () => {
   if (ctx) {
     ctx.clearRect(0, 0, canvas.value.width, canvas.value.height)
     drawGrid(ctx, canvas.value.width, canvas.value.height)
-    drawRectangle(getRectangle(), ctx)
+    drawRectangle(getParalelogram(), ctx)
   }
 })
 </script>
 
 <template>
   <div class="image-container">
-    <canvas ref="canvas" width="600" height="600"></canvas>
-    <input type="range" v-model="gridSize" min="2" max="100" step="1" />
+    <canvas ref="canvas" width="500" height="500"></canvas>
+    <div class="slider-container">
+        <div class="slider-container-data">
+          <a>Zoom</a>
+        </div>
+        <input type="range" class="slider" v-model="gridSize" min="2" max="100" step="1" />
+      </div>
   </div>
 </template>
 
@@ -217,9 +240,27 @@ canvas {
 .image-container {
   display: flex;
   flex-direction: column;
+  gap: 1rem;
   align-items: center;
   justify-content: center;
   height: 100%;
   width: 55%;
 }
+.slider {
+  appearance: none;
+  width: 75%;
+  height: 0.5rem;
+  border-radius: 0.313rem;
+  background: #565653cd;
+  outline: none;
+}
+
+
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10rem;
+  width: 35rem;
+}
+
 </style>

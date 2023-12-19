@@ -17,7 +17,7 @@ app.use(
     Vue3Toasity,
     {
       autoClose: 3000,
-      // ...
+      
     } as ToastContainerOptions);
 
 app.mount('#app')

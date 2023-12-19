@@ -5,9 +5,9 @@ import { useFractalsInfoStore } from '@/stores/fractalsinfo';
 
 const fractalsInfoStore = useFractalsInfoStore();
 fractalsInfoStore.setZoom(1);
-fractalsInfoStore.setIterations(50);
+fractalsInfoStore.setIterations(20);
 fractalsInfoStore.setHue(0);
-fractalsInfoStore.setCurrentFractal("sin z * cos z");
+fractalsInfoStore.setCurrentFractal("Ch z");
 
 
 </script>
@@ -39,7 +39,6 @@ fractalsInfoStore.setCurrentFractal("sin z * cos z");
 
 <style scoped>
 .main-item{
-  margin-top: var(--header-height);
     display: flex;
     justify-content: center;
     align-items: center;
